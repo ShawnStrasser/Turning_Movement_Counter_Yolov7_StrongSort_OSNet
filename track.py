@@ -22,10 +22,10 @@ from numpy import random
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # yolov5 strongsort root directory
+WEIGHTS = ROOT / 'weights'
 #***************************************
 ROOT = ROOT / 'Yolov7_StrongSORT_OSNet'
 #***************************************
-WEIGHTS = ROOT / 'weights'
 
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
