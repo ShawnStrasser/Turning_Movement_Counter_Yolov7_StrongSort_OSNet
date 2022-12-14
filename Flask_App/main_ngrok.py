@@ -5,7 +5,10 @@ import pickle
 from flask_ngrok import run_with_ngrok
 import glob
 
-app = Flask(__name__)
+TEMPLATE = '/content/Turning_Movement_Counter_Yolov7_StrongSort_OSNet/Flask_App/templates'
+STATIC = '/content/Turning_Movement_Counter_Yolov7_StrongSort_OSNet/Flask_App/static'
+
+app = Flask(__name__,template_folder=TEMPLATE,static_folder=STATIC)
 zone_pass = []
 zone__pass = []
 
