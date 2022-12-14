@@ -24,6 +24,7 @@ FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # yolov5 strongsort root directory
 WEIGHTS = ROOT / 'weights'
 #***************************************
+SAVE_ROOT = ROOT
 ROOT = ROOT / 'Yolov7_StrongSORT_OSNet'
 #***************************************
 
@@ -354,13 +355,13 @@ def parse_opt():
     parser.add_argument('--save-crop', action='store_true', help='save cropped prediction boxes')
     parser.add_argument('--save-vid', action='store_true', help='save video tracking results')
     parser.add_argument('--nosave', action='store_true', help='do not save images/videos')
-    # class 0 is person, 1 is bycicle, 2 is car... 79 is oven
+    # class 0 is person, 1 is bycicle, 2 is car, 3 is motorcycle, 5 is bus, 7 is truck... 79 is oven
     parser.add_argument('--classes', nargs='+', type=int, help='filter by class: --classes 0, or --classes 0 2 3')
     parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
     parser.add_argument('--augment', action='store_true', help='augmented inference')
     parser.add_argument('--visualize', action='store_true', help='visualize features')
     parser.add_argument('--update', action='store_true', help='update all models')
-    parser.add_argument('--project', default=ROOT / 'runs/track', help='save results to project/name')
+    parser.add_argument('--project', default=SAVE_ROOT / 'runs/track', help='save results to project/name')
     parser.add_argument('--name', default='exp', help='save results to project/name')
     parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
     parser.add_argument('--line-thickness', default=3, type=int, help='bounding box thickness (pixels)')
