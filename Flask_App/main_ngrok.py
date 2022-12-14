@@ -18,7 +18,7 @@ video_file = glob.glob("video/*")
 print(video_file)
 video_file = video_file[0]
 print(video_file)
-video_file = video_file.split('\\')[1]
+video_file = video_file.split('/')[1]
 source = './video/{}'.format(video_file)
 
 vid = cv2.VideoCapture(source)
