@@ -15,7 +15,9 @@ app.register_blueprint(blueprint)
 
 run_with_ngrok(app)  # Uncomment to run on google colab
 video_file = glob.glob("video/*")
+print(video_file)
 video_file = video_file[0]
+print(video_file)
 video_file = video_file.split('\\')[1]
 source = './video/{}'.format(video_file)
 
