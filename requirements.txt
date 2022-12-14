@@ -1,6 +1,8 @@
 # pip install -r requirements.txt
-flask-ngrok
-flask==
+openpyxl
+flask==0.12.2
+tk
+flask_ngrok
 
 # base ----------------------------------------
 matplotlib>=3.2.2
