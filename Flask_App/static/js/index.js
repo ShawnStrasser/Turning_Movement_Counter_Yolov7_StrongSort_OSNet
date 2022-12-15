@@ -21,7 +21,7 @@ let addingLineBtn = $("#adding-line-btn")[0];
 //Call the function 'activateAddingLine' When button is pressed
 addingLineBtn.addEventListener('click', activateAddingLine);
 
-let imageSaver = $("#save-image-btn");
+let imageSaver = $("#save-image-btn")[0];
 imageSaver.addEventListener('click', SaveImage, false);
 
 //create random int
