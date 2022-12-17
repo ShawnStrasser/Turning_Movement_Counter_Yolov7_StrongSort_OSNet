@@ -59,6 +59,17 @@ zone_colors = pickle.load(zone_colors)
 # Load pickle file containing the zone definitions
 zone_def = open("./Flask_App/zone_pkl_dump.pkl", "rb")
 zone_def = pickle.load(zone_def)
+
+mask = open("./Fabric_tutorial/mask.pkl", "rb")
+mask = pickle.load(mask)
+for zone in Zones:
+    for m in range(len(mask)):
+        if mask[m][0] > mask[m][1]:
+            zone[0][1] = zone[0][1] - mask[m][1]
+            zone[1][1] = zone[1][1] - mask[m][1]
+        if mask[m][1] > mask[m][0]:
+            zone[0][0] = zone[0][0] - mask[m][0]
+            zone[1][0] = zone[1][0] - mask[m][0]
 # ****************************************************************
 
 VID_FORMATS = 'asf', 'avi', 'gif', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'ts', 'wmv'  # include video suffixes
@@ -134,7 +145,7 @@ def run(
         dataset = LoadStreams(source, img_size=imgsz, stride=stride.cpu().numpy())
         nr_sources = 1
     else:
-        dataset = LoadImages(source, img_size=imgsz, stride=stride)
+        dataset = LoadImages(source, img_size=imgsz, stride=stride, mask=mask)
         nr_sources = 1
     vid_path, vid_writer, txt_path = [None] * nr_sources, [None] * nr_sources, [None] * nr_sources
 
