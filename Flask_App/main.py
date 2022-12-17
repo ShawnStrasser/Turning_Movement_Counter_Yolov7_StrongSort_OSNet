@@ -1,9 +1,6 @@
-import time
 import cv2
 from flask import Flask, render_template, Response, request
-from random import uniform
 import json
-from Zone_dict import Move_dict
 import pickle
 import  tkinter as tk
 from tkinter import filedialog
@@ -11,6 +8,7 @@ from tkinter import filedialog
 app = Flask(__name__)
 zone_pass = []
 zone__pass = []
+mask = []
 
 root = tk.Tk()
 root.withdraw()
@@ -50,6 +48,9 @@ def Recieve_coords():
     if int(event) == 2:
         zone__pass.append([zone_pass[-1], [x, y]])
         print(zone__pass)
+    if int(event) == 3:
+        mask.append([x, y])
+        print(mask)
 
     if int(event) != 0:
         with open("zone_coords_pkl_dump.pkl", "wb") as file:
@@ -103,6 +104,8 @@ def SaveImage():
 
     with open("colors_pkl_dump.pkl", "wb") as file:
         pickle.dump(colors, file)
+    with open("mask.pkl", "wb") as file:
+        pickle.dump(mask, file)
 
     print(colors)
 
