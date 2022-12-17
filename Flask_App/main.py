@@ -24,7 +24,7 @@ file_path = file_path[1][1:]
 
 @app.route('/')
 def index():
-    return render_template('index copy.html',width=width, height=height, FileName=file_path)
+    return render_template('index.html',width=width, height=height, FileName=file_path)
 
 
 @app.route('/help')

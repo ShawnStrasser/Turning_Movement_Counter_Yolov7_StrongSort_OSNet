@@ -1,3 +1,4 @@
+// TODO: update the selctors with jQuery
 let width = $("#video")[0].width;
 let height = $("#video")[0].height;
 //Set the canvas properties - need fabric.js
@@ -17,11 +18,12 @@ fabric.Image.fromObject(imgElement,(img)=>{
 
 //set the button id to a variable 'addingLineBtn'
 let addingLineBtn = $("#adding-line-btn")[0];
+let addingMaskBtn = $("#create-mask-btn")[0];
+let imageSaver = $("#save-image-btn")[0];
 
 //Call the function 'activateAddingLine' When button is pressed
 addingLineBtn.addEventListener('click', activateAddingLine);
-
-let imageSaver = $("#save-image-btn")[0];
+addingMaskBtn.addEventListener('click', activateAddingMask);
 imageSaver.addEventListener('click', SaveImage, false);
 
 //create random int
@@ -46,9 +48,80 @@ function activateAddingLine(){
     canvas.on('mouse:move', startDrawingLine);
     canvas.on('mouse:up', stopDrawingLine);
 
+    canvas.off('mouse:down', startAddingRect);
+    canvas.off('mouse:move', startDrawingRect);
+    canvas.off('mouse:up', stopDrawingRect);
+
     canvas.selection = false;
 }
 
+function activateAddingMask(){
+    //clear out the list if button is not disabled
+    if (addingMaskBtn.disabled === false){
+        console.log('refresh list');
+        //send_coords_toFlask(0, 0, 3, 0);
+    }
+
+    //add a disable class when button is click so it cant be clicked a second time
+    $('.mask_btn').addClass('disabled');
+
+    //Add event listeners
+    canvas.on('mouse:down', startAddingRect);
+    canvas.on('mouse:move', startDrawingRect);
+    canvas.on('mouse:up', stopDrawingRect);
+
+    canvas.off('mouse:down', startAddingLine);
+    canvas.off('mouse:move', startDrawingLine);
+    canvas.off('mouse:up', stopDrawingLine);
+
+    canvas.selection = false;
+}
+
+function startAddingRect(o){
+    mouseDown = true;
+    click_event = 3;
+    let  pointer = canvas.getPointer(o.e);
+
+    origX = 0
+    origY = 0
+
+    rect = new fabric.Rect({
+        left: origX,
+        top: origY,
+        originX: 'left',
+        originY: 'top',
+        width: pointer.x - origX,
+        height: pointer.y - origY,
+        angle: 0,
+        fill: 'rgba(255,0,0,0.5)',
+        transparentCorners: false
+    });
+
+    canvas.add(rect);
+    canvas.requestRenderAll();
+    //send_coords_toFlask(pointer.x, pointer.y, click_event);
+}
+
+function startDrawingRect(o){
+    if (mouseDown === true){
+        let  pointer = canvas.getPointer(o.e);
+
+        rect.set({
+            width: pointer.x - origX,
+            height: pointer.y - origY
+        });
+
+        canvas.requestRenderAll();
+    }
+
+}
+
+function stopDrawingRect(o){
+    let  pointer = canvas.getPointer(o.e);
+    click_event = 3;
+    mouseDown = false;
+    send_coords_toFlask(pointer.x, pointer.y, click_event);
+}
 
 let line;
 let mouseDown = false;
@@ -176,7 +249,7 @@ function send_coords_toFlask(x, y, click_event, id){
     const request = new XMLHttpRequest();
 
     $.ajax({
-            url:"/Receive_coords",
+            url:"/Recieve_coords",
             type:"POST",
             contentType: "application/json",
             data: JSON.stringify(s)
