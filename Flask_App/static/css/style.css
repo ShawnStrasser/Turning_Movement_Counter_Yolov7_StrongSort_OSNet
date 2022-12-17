@@ -67,7 +67,7 @@
     pointer-events: none;
 }
 
-#edit-line-btn{
+#create-mask-btn{
     position: absolute;
     top: 14px;
     left: 295px;
@@ -79,11 +79,11 @@
     font-weight: 600;
 }
 
-.edit_btn {
+.mask_btn {
     transition-duration: 0.4s;
 }
 
-.edit_btn:hover {
+.mask_btn:hover {
     color: white;
     background-color: #6495ED;
     font-weight: 600;
