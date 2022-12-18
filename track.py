@@ -60,7 +60,7 @@ zone_colors = pickle.load(zone_colors)
 zone_def = open("./Flask_App/zone_pkl_dump.pkl", "rb")
 zone_def = pickle.load(zone_def)
 
-mask = open("./Fabric_tutorial/mask.pkl", "rb")
+mask = open("./Flask_App/mask.pkl", "rb")
 mask = pickle.load(mask)
 for zone in Zones:
     for m in range(len(mask)):
