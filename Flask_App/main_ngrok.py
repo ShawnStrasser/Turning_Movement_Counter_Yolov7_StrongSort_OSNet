@@ -11,6 +11,7 @@ STATIC = '/content/Turning_Movement_Counter_Yolov7_StrongSort_OSNet/Flask_App/st
 app = Flask(__name__,template_folder=TEMPLATE,static_folder=STATIC)
 zone_pass = []
 zone__pass = []
+mask = []
 
 blueprint = Blueprint('site', __name__, static_folder='video')
 app.register_blueprint(blueprint)
@@ -39,7 +40,7 @@ def help():
 
 
 @app.route('/Receive_coords', methods=['POST'])
-def Recieve_coords():
+def Receive_coords():
     output = request.get_json()
     result = json.loads(output)
     x = result['x']
@@ -54,6 +55,9 @@ def Recieve_coords():
     if int(event) == 2:
         zone__pass.append([zone_pass[-1], [x, y]])
         print(zone__pass)
+    if int(event) == 3:
+        mask.append([x, y])
+        print(mask)
 
     if int(event) != 0:
         with open("zone_coords_pkl_dump.pkl", "wb") as file:
@@ -107,6 +111,8 @@ def SaveImage():
 
     with open("colors_pkl_dump.pkl", "wb") as file:
         pickle.dump(colors, file)
+    with open("mask.pkl", "wb") as file:
+        pickle.dump(mask, file)
 
     print(colors)
 

@@ -33,7 +33,7 @@ def help():
 
 
 @app.route('/Receive_coords', methods=['POST'])
-def Recieve_coords():
+def Receive_coords():
     output = request.get_json()
     result = json.loads(output)
     x = result['x']
