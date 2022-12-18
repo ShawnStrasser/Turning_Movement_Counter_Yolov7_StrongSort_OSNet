@@ -6,7 +6,6 @@ import math
 import numpy as np
 
 
-# TODO: Convert to numpy arrays to speed this up
 class TmcCounter:
     def __init__(self, Zones, zone_def):
         self.data = [[[]]]
