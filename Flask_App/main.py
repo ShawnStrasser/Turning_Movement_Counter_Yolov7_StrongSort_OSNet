@@ -32,7 +32,7 @@ def help():
     return render_template('help.html')
 
 
-@app.route('/Recieve_coords', methods=['POST'])
+@app.route('/Receive_coords', methods=['POST'])
 def Recieve_coords():
     output = request.get_json()
     result = json.loads(output)

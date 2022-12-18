@@ -249,7 +249,7 @@ function send_coords_toFlask(x, y, click_event, id){
     const request = new XMLHttpRequest();
 
     $.ajax({
-            url:"/Recieve_coords",
+            url:"/Receive_coords",
             type:"POST",
             contentType: "application/json",
             data: JSON.stringify(s)
