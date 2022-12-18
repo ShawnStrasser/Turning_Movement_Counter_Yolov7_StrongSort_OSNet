@@ -1,4 +1,3 @@
-// TODO: update the selctors with jQuery
 let width = $("#video")[0].width;
 let height = $("#video")[0].height;
 //Set the canvas properties - need fabric.js

@@ -2,9 +2,11 @@ from Intersect import INTERSECT
 import pickle
 from TMC_classification_Copy import TMC_class, preprocessing
 import cv2
+import math
 import numpy as np
 
 
+# TODO: Convert to numpy arrays to speed this up
 class TmcCounter:
     def __init__(self, Zones, zone_def):
         self.data = [[[]]]
@@ -16,11 +18,14 @@ class TmcCounter:
         self.Zones = Zones
         self.count = [0] * len(Zones)
         self.zone_def = zone_def
+        self.data_zones_ray_intersect = []
 
     def count_TMC(self, box, id, cls, im0, zone_colors):
         center_coordinates = (int(box[0]+(box[2]-box[0])/2), int(box[1]+(box[3]-box[1])/2))
 
         # SAVE ALL CENTER POINTS IN A LIST - 'DATA'
+        first_intersection = 0
+        second_intersection = 0
         i = 0
         for sub_list in self.data:
             i += 1
@@ -29,12 +34,43 @@ class TmcCounter:
                     # TODO: Add Filter?
                     self.index = i  # subtract 2 since the first list of 'data' is empty
                     self.data_store_f[self.index - 2] = ([id, center_coordinates[0], center_coordinates[1]])
-                    sub_list.append([id, center_coordinates[0], center_coordinates[1], cls])
+
+                    # ***************************************************************************************
+                    slope_y = self.data_store_f[self.index - 2][2] - self.data_store_in[self.index - 2][2]
+                    slope_x = self.data_store_f[self.index - 2][1] - self.data_store_in[self.index - 2][1]
+                    EndPointX = 1500 * slope_x + self.data_store_in[self.index - 2][1]
+                    EndPointY = 1500 * slope_y + self.data_store_in[self.index - 2][2]
+
+                    num_intersections, intersection_list = INTERSECT(self.data_store_in[self.index - 2][1],
+                                                                     self.data_store_in[self.index - 2][2],
+                                                                     EndPointX, EndPointY, self.Zones, Pre=True)
+                    if num_intersections != 0:
+                        distance_list = []
+                        for intersect in intersection_list:
+                            distance = math.sqrt((intersect[0] - self.data_store_in[self.index - 2][1]) ** 2 +
+                                                 (intersect[1] - self.data_store_in[self.index - 2][2]) ** 2)
+                            distance_list.append(distance)
+                        if num_intersections == 1:
+                            first_intersection = intersection_list[0][2]
+                            second_intersection = 0
+                        if num_intersections == 2:
+                            first_intersection = intersection_list[distance_list.index(min(distance_list))][2]
+                            second_intersection = intersection_list[distance_list.index(max(distance_list))][2]
+
+                    print(id, first_intersection, second_intersection)
+
+                    self.data_zones_ray_intersect.append([id, center_coordinates[0], center_coordinates[1],
+                                                          first_intersection, second_intersection, cls])
+                    # ****************************************************************************************
+
+                    sub_list.append([id, center_coordinates[0], center_coordinates[1], first_intersection,
+                                     second_intersection, cls])
                     self.breakout = True
                 else:
                     break
         if not self.breakout:
-            self.data.append([[id, center_coordinates[0], center_coordinates[1], cls]])
+            self.data.append([[id, center_coordinates[0], center_coordinates[1], first_intersection,
+                               second_intersection, cls]])
             self.data_store_in.append([id, center_coordinates[0], center_coordinates[1]])
             self.data_store_f.append([id, center_coordinates[0], center_coordinates[1]])
 
@@ -74,6 +110,8 @@ class TmcCounter:
             pickle.dump(self.data_zones, file)
         with open("data_test.pkl", "wb") as file:
             pickle.dump(self.data, file)
+        with open("data_zones_ray_intersect.pkl", "wb") as file:
+            pickle.dump(self.data_zones_ray_intersect, file)
 
         # COUNT THE TURN MOVEMENTS
         pro_raw_data = self.data.copy()
@@ -98,6 +136,12 @@ def drawLine(im0_, start_point, end_point, clr=(102, 255, 102), thick=3, zone_nu
     line_center = (int(line_center_x), int(line_center_y))
     count_line_center = [x - 25 for x in line_center]
 
+    #angle = math.degrees(math.atan((end_point[1] - start_point[1])/(end_point[0] - start_point[0])))
+    #axesLength = (50, 20)
+    #startAngle = 0
+    #endAngle = 360
+    #cv2.ellipse(im0_, line_center, axesLength, angle, startAngle, endAngle, clr, -1)
+
     cv2.circle(im0_, line_center, 20, clr, -1)
     cv2.circle(im0_, count_line_center, 20, clr, -1)
     cv2.circle(im0_, start_point, 7, clr, -1)
@@ -105,14 +149,14 @@ def drawLine(im0_, start_point, end_point, clr=(102, 255, 102), thick=3, zone_nu
 
     font = cv2.FONT_HERSHEY_SIMPLEX
     fontScale = 1
-    text = str(zone_num)
+    text = 'Zone: ' + str(zone_num)
     text_count = str(count)
     textsize, base = cv2.getTextSize(text, font, 1, 2)
     textsize = textsize[0]
     txt_center = (int(line_center_x - (textsize / 2)), int(line_center_y - (textsize / 2) + base * 2))
     txt_count_center = [x - 25 for x in txt_center]
 
-    cv2.putText(im0_, text, txt_center, font, fontScale, (255, 255, 255), 2, cv2.LINE_AA)
-    cv2.putText(im0_, text_count, txt_count_center, font, fontScale, (255, 255, 255), 2, cv2.LINE_AA)
+    cv2.putText(im0_, text, txt_center, font, fontScale, (255, 255, 255), 1, cv2.LINE_AA)
+    #cv2.putText(im0_, text_count, txt_count_center, font, fontScale, (255, 255, 255), 1, cv2.LINE_AA)
 
     return im0_
