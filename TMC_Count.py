@@ -30,7 +30,6 @@ class TmcCounter:
             i += 1
             for sub_list2 in sub_list:
                 if id in sub_list2 and not self.breakout and sub_list2.index(id) == 0:
-                    # TODO: Add Filter?
                     self.index = i  # subtract 2 since the first list of 'data' is empty
                     self.data_store_f[self.index - 2] = ([id, center_coordinates[0], center_coordinates[1]])
 
@@ -55,8 +54,6 @@ class TmcCounter:
                         if num_intersections == 2:
                             first_intersection = intersection_list[distance_list.index(min(distance_list))][2]
                             second_intersection = intersection_list[distance_list.index(max(distance_list))][2]
-
-                    print(id, first_intersection, second_intersection)
 
                     self.data_zones_ray_intersect.append([id, center_coordinates[0], center_coordinates[1],
                                                           first_intersection, second_intersection, cls])
