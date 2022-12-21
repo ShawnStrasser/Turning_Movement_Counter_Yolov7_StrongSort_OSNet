@@ -187,7 +187,7 @@ def run(
     fps_count = 0
     interval = 0
     # -------------
-    for frame_idx, (path, im, im0s, vid_cap) in enumerate(dataset):
+    for frame_idx, (path, im, im0s, vid_cap, w, h) in enumerate(dataset):
         s = ''
         t1 = time_synchronized()
         im = torch.from_numpy(im).to(device)
@@ -329,8 +329,10 @@ def run(
                         vid_writer[i].release()  # release previous video writer
                     if vid_cap:  # video
                         fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                        w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-                        h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                        #************************************************
+                        #w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                        #h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                        #************************************************
                     else:  # stream
                         fps, w, h = 30, im0.shape[1], im0.shape[0]
                     save_path = str(Path(save_path).with_suffix('.mp4'))  # force *.mp4 suffix on results videos
