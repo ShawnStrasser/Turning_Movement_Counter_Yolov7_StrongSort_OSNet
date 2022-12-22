@@ -177,7 +177,8 @@ def run(
     tmc_class = TmcCounter(Zones, zone_def)
     # *******************************
     outputs = [None] * nr_sources
-    
+    deleted = [None] * nr_sources
+
     colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 
     # Run tracking
@@ -257,7 +258,7 @@ def run(
 
                 # pass detections to strongsort
                 t4 = time_synchronized()
-                outputs[i] = strongsort_list[i].update(xywhs.cpu(), confs.cpu(), clss.cpu(), im0)
+                outputs[i], deleted[i] = strongsort_list[i].update(xywhs.cpu(), confs.cpu(), clss.cpu(), im0)
                 t5 = time_synchronized()
                 dt[3] += t5 - t4
 

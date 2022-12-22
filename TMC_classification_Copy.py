@@ -133,7 +133,7 @@ def classify(Count, count_rng, EnterZone, ExitZone, zone_def, TMC_count):
     return Count
 
 
-def missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng, pro_data, zone_coords):
+def missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng, zone_coords):
     id_2_find = TMC_count[0][0]  # id pf the single detection
 
     # FIND THE DATA ASSOCIATED WITH THE ID_2_FIND
@@ -146,10 +146,6 @@ def missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng, pro_data, 
             if id_2_find in id and id.index(id_2_find) == 0:
                 breakout = True
                 # FIND THE MIDPOINT
-                x1p = pro_data[raw_count_ID - 1][0][1]
-                x2p = pro_data[raw_count_ID - 1][-1][1]
-                y1p = pro_data[raw_count_ID - 1][0][2]
-                y2p = pro_data[raw_count_ID - 1][-1][2]
                 x1r = raw_data[raw_count_ID - 1][0][1]
                 x2r = raw_data[raw_count_ID - 1][-1][1]
                 y1r = raw_data[raw_count_ID - 1][0][2]
@@ -217,7 +213,7 @@ def missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng, pro_data, 
     return Count
 
 
-def TMC_class(raw_data, pro_data, processed_zone_detections, num_values, zone_def, zone_coords, interval=0):
+def TMC_class(raw_data, processed_zone_detections, num_values, zone_def, zone_coords, interval=0):
     Count = [0] * 16
     missed_Count = [0] * 16
     movement = [0] * 4
@@ -247,8 +243,7 @@ def TMC_class(raw_data, pro_data, processed_zone_detections, num_values, zone_de
                         j += 1
                 else:
                     #missed_Count = missed(missed_Count, zone_def, raw_data, TMC_count, count_rng, zone_coords)
-                    missed_Count = missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng, pro_data,
-                                                    zone_coords)
+                    missed_Count = missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng,zone_coords)
                     break_out = True
 
             if break_out:
@@ -339,7 +334,6 @@ def remove_outside_zone_box(data, w, h, zone_coords):
                     x = [point[1], w, point[1], 0]
                     y = [0, point[2], h, point[2]]
                     num_intersections = INTERSECT(point[1], point[2], x[k], y[k], zone_coords, True)
-                    # print(num_intersections)
                     if num_intersections[0] > 0:
                         breakout = True
                         break

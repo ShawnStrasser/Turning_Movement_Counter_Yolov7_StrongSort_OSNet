@@ -1,6 +1,6 @@
 from Intersect import INTERSECT
 import pickle
-from TMC_classification_Copy import TMC_class, preprocessing
+from TMC_classification_Copy import TMC_class, preprocessing, organize_list
 import cv2
 import math
 import numpy as np
@@ -111,12 +111,13 @@ class TmcCounter:
 
         # COUNT THE TURN MOVEMENTS
         pro_raw_data = self.data.copy()
-        processed_raw_data, processed_zone_detections, num_values = preprocessing(pro_raw_data, self.data_zones,
-                                                                                  self.Zones)
-
-        r, missed, missed_Count = TMC_class(self.data, processed_raw_data, processed_zone_detections, num_values,
+        #processed_raw_data, processed_zone_detections, num_values = preprocessing(pro_raw_data, self.data_zones,
+        #                                                                          self.Zones)
+        processed_zone_detections, num_values = organize_list(self.data_zones)
+        #r, missed, missed_Count = TMC_class(self.data, processed_raw_data, processed_zone_detections, num_values,
+        #                                    self.zone_def, self.Zones, interval)
+        r, missed, missed_Count = TMC_class(self.data, processed_zone_detections, num_values,
                                             self.zone_def, self.Zones, interval)
-
         x = interval * 15
         with open("Zones_{}.pkl".format(x), "wb") as file:
             pickle.dump(self.data_zones, file)
