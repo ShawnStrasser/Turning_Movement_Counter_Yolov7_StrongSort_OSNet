@@ -213,6 +213,46 @@ def missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng, zone_coord
     return Count
 
 
+def missed_Ray_method(raw_data, zone_def, id_2_find, Count):
+    count_rng = len(Count) - 3
+    ZoneList = []
+    print(id_2_find)
+    for TMC_count in raw_data:  # For each unique id
+        print(TMC_count)
+        if int(id_2_find) == TMC_count[0][0]:
+            print(len(TMC_count))
+            zoneFound = False
+            z1 = None
+            z1_x = None
+            z2 = None
+            count = 0
+            while count < len(TMC_count):  # loop through each detection in unique id
+                print(TMC_count[count][3])
+                if TMC_count[count][3] != 0 and not zoneFound:
+                    z1 = TMC_count[count][3]  # save the first non-zero zone detection as z1
+                    z1_x = TMC_count[count][3]
+                    count += 1
+                    zoneFound = True
+                elif TMC_count[count][3] != 0 and zoneFound:
+                    if z1_x == TMC_count[count][3]:  # CHECK AGAINST Z1_X IN ORDER TO GET THE LAST CHANGE IN THE LIST
+                        count += 1
+                    else:
+                        z1_x = TMC_count[count][3]
+                        z2 = TMC_count[count][3]
+                        count += 1
+                else:
+                    count += 1
+            if z1 != None and z2 == None:  # Check if possible U turn
+                pass
+            ZoneList.append([TMC_count[0][0], z1, z2])
+
+            Count = classify(Count, count_rng, z1, z2, zone_def, TMC_count)
+        print(ZoneList, len(ZoneList))
+    else:
+        pass
+    return Count
+
+
 def TMC_class(raw_data, processed_zone_detections, num_values, zone_def, zone_coords, interval=0):
     Count = [0] * 16
     missed_Count = [0] * 16
@@ -243,7 +283,8 @@ def TMC_class(raw_data, processed_zone_detections, num_values, zone_def, zone_co
                         j += 1
                 else:
                     #missed_Count = missed(missed_Count, zone_def, raw_data, TMC_count, count_rng, zone_coords)
-                    missed_Count = missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng,zone_coords)
+                    #missed_Count = missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng,zone_coords)
+                    missed_Count = missed_Ray_method(raw_data, zone_def, TMC_count[0][0], Count)
                     break_out = True
 
             if break_out:
