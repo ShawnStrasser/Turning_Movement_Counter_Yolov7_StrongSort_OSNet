@@ -69,7 +69,7 @@ $ python main.py
 
 ```bash
 
-$ python track.py --source <path to video> --yolo-weights yolov7-e6e.pt --img 1280 --classes 2 3 5 7 --strong-sort-weights osnet_x0_25_market1501.pt --save-vid
+$ python track.py --source <path to video> --yolo-weights yolov7-e6e.pt --img 640 --classes 2 3 5 7 --strong-sort-weights osnet_x0_25_market1501.pt --save-vid
                                                                                                                                                      --show-vid --device 0 #if cuda is available
 ```
 
