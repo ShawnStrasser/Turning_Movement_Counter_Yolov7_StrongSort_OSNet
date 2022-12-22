@@ -42,7 +42,7 @@ class TmcCounter:
                     num_intersections, intersection_list = INTERSECT(self.data_store_in[self.index - 2][1],
                                                                      self.data_store_in[self.index - 2][2],
                                                                      EndPointX, EndPointY, self.Zones, Pre=True)
-                    if num_intersections != 0:
+                    if num_intersections != 0 and len(intersection_list) != 0:
                         distance_list = []
                         for intersect in intersection_list:
                             distance = math.sqrt((intersect[0] - self.data_store_in[self.index - 2][1]) ** 2 +
