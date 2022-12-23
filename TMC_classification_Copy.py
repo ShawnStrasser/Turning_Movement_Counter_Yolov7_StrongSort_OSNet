@@ -302,9 +302,8 @@ def TMC_class(raw_data, pro_data, processed_zone_detections, num_values, zone_de
     markdown_list = [["TIME","NBR", "NBT", "NBL", "NBU", "SBR", "SBT", "SBL", "SBU", "EBR", "EBT", "EBL", "EBU", "WBR",
                       "WBT","WBL","WBU"],Count_str]
     mkdown = make_markdown_table(markdown_list, interval)
-    res = bytes(mkdown, 'utf-8')
-    file1 = open("Output.md", "wb")
-    file1.write(res)
+    file1 = open("Output.txt", "w")
+    file1.write(mkdown)
     file1.close()
     return Count, Missed, missed_Count
 
