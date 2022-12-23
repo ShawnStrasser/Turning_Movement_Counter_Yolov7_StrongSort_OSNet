@@ -253,7 +253,7 @@ def missed_Ray_method(raw_data, zone_def, id_2_find, Count):
     return Count
 
 
-def TMC_class(raw_data, processed_zone_detections, num_values, zone_def, zone_coords, interval=0):
+def TMC_class(raw_data, pro_data, processed_zone_detections, num_values, zone_def, zone_coords, interval=0):
     Count = [0] * 16
     missed_Count = [0] * 16
     movement = [0] * 4
@@ -284,7 +284,7 @@ def TMC_class(raw_data, processed_zone_detections, num_values, zone_def, zone_co
                 else:
                     #missed_Count = missed(missed_Count, zone_def, raw_data, TMC_count, count_rng, zone_coords)
                     #missed_Count = missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng,zone_coords)
-                    missed_Count = missed_Ray_method(raw_data, zone_def, TMC_count[0][0], Count)
+                    missed_Count = missed_Ray_method(pro_data, zone_def, TMC_count[0][0], Count)
                     break_out = True
 
             if break_out:

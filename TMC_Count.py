@@ -113,10 +113,10 @@ class TmcCounter:
         pro_raw_data = self.data.copy()
         #processed_raw_data, processed_zone_detections, num_values = preprocessing(pro_raw_data, self.data_zones,
         #                                                                          self.Zones)
-        processed_zone_detections, num_values = organize_list(self.data_zones)
+        processed_raw_data, processed_zone_detections, num_values = organize_list(self.data_zones)
         #r, missed, missed_Count = TMC_class(self.data, processed_raw_data, processed_zone_detections, num_values,
         #                                    self.zone_def, self.Zones, interval)
-        r, missed, missed_Count = TMC_class(self.data, processed_zone_detections, num_values,
+        r, missed, missed_Count = TMC_class(self.data, processed_raw_data, processed_zone_detections, num_values,
                                             self.zone_def, self.Zones, interval)
         x = interval * 15
         with open("Zones_{}.pkl".format(x), "wb") as file:
