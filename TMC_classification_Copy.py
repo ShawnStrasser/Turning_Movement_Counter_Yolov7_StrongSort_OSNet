@@ -364,6 +364,37 @@ def remove_static_detections(processed_output):
     return processed_output
 
 
+def remove_static_raw_detections(processed_output):
+    p2 = []
+    j = 0
+    for id in processed_output:  # For each unique id
+        i = 0
+        for point in range(len(id)):
+            while i < len(id):
+                if i == 0:
+                    p2 = [id[i][1], id[i][2]]
+                    i += 1
+                else:
+                    #p1 = [id[i+1][1], id[i+1][2]]
+                    #distance = math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
+                    #print(distance)
+                    if p2 < ([id[i][1] + 1, id[i][2] + 1]) and p2 > ([id[i][1] - 1, id[i][2] - 1]):
+                        removed_element = processed_output[j].pop(i)
+                        #print("removed static:" + str(removed_element))
+                        i -= 1
+                        if len(processed_output[j]) == 0:  # if the list is empty
+                            processed_output[j].pop()
+                        # print(removed_element)
+                    else:
+                        if i < len(id) - 1:
+                            i += 1
+                            p2 = [id[i][1], id[i][2]]
+                        else:
+                            break
+        j += 1
+    return processed_output
+
+
 def remove_outside_zone_box(data, w, h, zone_coords):
     j = 0
     for id in data:
@@ -375,6 +406,7 @@ def remove_outside_zone_box(data, w, h, zone_coords):
                     x = [point[1], w, point[1], 0]
                     y = [0, point[2], h, point[2]]
                     num_intersections = INTERSECT(point[1], point[2], x[k], y[k], zone_coords, True)
+                    # print(num_intersections)
                     if num_intersections[0] > 0:
                         breakout = True
                         break
@@ -387,32 +419,7 @@ def remove_outside_zone_box(data, w, h, zone_coords):
     return data
 
 
-def preprocessing(data, data_zone_detections, zone_coords):
-    # TODO: 1. Remove the points that are duplicates. Vehicle detections that are not moving.
-    #          Process the zone detection and eliminate data that indicates zero movement. The issue
-    #          is that if a vehicle is sitting on a detection zone and the exit does not get picked up
-    #          the algorithm will think its a U-turn.
-    #   2. Remove the raw data points that are outside of the 'Zone Box'.  'Ray Casting method.'
-    #     Draw a line up/down/left/right until an intersection/s have been made.  If 1 intersection
-    #     then the point is inside the Box, if 2 intersections made then the point is outside the
-    #     box and can be deleted.
-    #   3. Check if the length zone detection list is greater than 2. If the last value is the same as the first
-    #     and the zone detections change say 3 - 1 - 3 : remove the last 3
-
-    processed_output, num_values = organize_list(data_zone_detections)
-
-    # TODO: need to get height and width of video automatically
-    w = 1280
-    h = 720
-
-    #  1. IF THE VEHICLES ARE NOT MOVING OVER A DETECTION ZONE
-    processed_static = remove_static_detections(processed_output)
-
-    # 2. REMOVE DATA FROM OUTSIDE THE ZONE BOX
-    processed_zone_box = remove_outside_zone_box(data, w, h, zone_coords)
-
-
-    #  3. 3 - 1 - 3 : remove last 3
+def remove_bad_detections(processed_static):
     j = 0
     for id in processed_static:  # For each unique id
         i = 0
@@ -424,17 +431,36 @@ def preprocessing(data, data_zone_detections, zone_coords):
                 else:
                     # if p2 == [id[i][1], id[i][2]]:
                     if p2 != id[i][3]:
-                        #print(processed_output[j][i+1:])
+                        # print(processed_output[j][i+1:])
                         i += 1
                         processed_static[j] = processed_static[j][:i]
-                        #removed_element = processed_output[j].pop(i + 1)
-                        #print(processed_output[j])
+                        # removed_element = processed_output[j].pop(i + 1)
+                        # print(processed_output[j])
                     else:
                         i += 1
                         p2 = id[i][3]
         j += 1
+    return processed_static
 
-    return processed_zone_box, processed_static, num_values
+
+def preprocessing(data, data_zone_detections, zone_coords):
+    # TODO: need to get height and width of video automatically
+    w = 1280
+    h = 720
+
+    processed_output, num_values = organize_list(data_zone_detections)
+
+    #  1. IF THE VEHICLES ARE NOT MOVING OVER A DETECTION ZONE
+    processed_static = remove_static_detections(processed_output)
+    processed_static_raw_data = remove_static_raw_detections(data)
+
+    # 2. REMOVE DATA FROM OUTSIDE THE ZONE BOX
+    processed_zone_box = remove_outside_zone_box(data, w, h, zone_coords)
+
+    #  3. 3 - 1 - 3 : remove last 3
+    processed_zone_detections = remove_bad_detections(processed_static)
+
+    return processed_static_raw_data, processed_zone_detections, num_values
 
 
 def make_markdown_table(array, interval):
@@ -461,32 +487,32 @@ def make_markdown_table(array, interval):
 
 if __name__ == '__main__':
     # Load pickle file containing the zone definitions
-    zone_def = open("./TMC Testing/test2/zone_pkl_dump.pkl", "rb")
+    zone_def = open("./TMC Testing/test8/zone_pkl_dump.pkl", "rb")
     zone_def = pickle.load(zone_def)
 
-    zone_coords = open("./TMC Testing/test2/zone_coords_pkl_dump.pkl", "rb")
+    zone_coords = open("./TMC Testing/test8/zone_coords_pkl_dump.pkl", "rb")
     zone_coords = pickle.load(zone_coords)
 
-    data = open("./TMC Testing/test2/data_zones_test.pkl", "rb")
+    data = open("./TMC Testing/test8/data_zones_test.pkl", "rb")
     data = pickle.load(data)
     data.sort(key=lambda p: p[0])
 
-    raw_data = open("./TMC Testing/test2/data_test.pkl", "rb")
+    raw_data = open("./TMC Testing/test8/data_test.pkl", "rb")
     raw_data = pickle.load(raw_data)
     raw_data.sort(key=lambda p: p[0])
-    raw_data = raw_data[1:]  # first element is blank - remove it
+    #raw_data = raw_data[1:]  # first element is blank - remove it
 
     pro_raw_data = raw_data.copy()
     processed_raw_data, processed_zone_detections, num_values = preprocessing(pro_raw_data, data, zone_coords)
 
     # RELOAD THE RAW DATA AND THE ZONE DETECTIONS
-    raw_data = open("./TMC Testing/test2/data_test.pkl", "rb")
+    raw_data = open("./TMC Testing/test8/data_test.pkl", "rb")
     raw_data = pickle.load(raw_data)
     raw_data.sort(key=lambda p: p[0])
     raw_data = raw_data[1:]  # first element is blank - remove it
     #processed_static_raw = remove_static_detections(raw_data)  # REMOVE THE STATIC VEHICLES FROM THE RAW DATA
 
-    data = open("./TMC Testing/test2/data_zones_test.pkl", "rb")
+    data = open("./TMC Testing/test8/data_zones_test.pkl", "rb")
     data = pickle.load(data)
     data.sort(key=lambda p: p[0])
     data = organize_list(data)
