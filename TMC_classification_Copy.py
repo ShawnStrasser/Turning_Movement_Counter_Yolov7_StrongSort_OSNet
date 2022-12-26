@@ -1,14 +1,8 @@
 from itertools import islice
 import numpy as np
-import pandas as pd
 import pickle
-from collections import Counter
 import math
-import markdown
 from Intersect import INTERSECT
-from matplotlib import pyplot as plt
-import random
-import openpyxl
 
 
 def missed(Count, zone_def, raw_output, TMC_count, count_rng, zone_coords):
@@ -282,8 +276,6 @@ def TMC_class(raw_data, pro_data, processed_zone_detections, num_values, zone_de
                         i += 4
                         j += 1
                 else:
-                    #missed_Count = missed(missed_Count, zone_def, raw_data, TMC_count, count_rng, zone_coords)
-                    #missed_Count = missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng,zone_coords)
                     missed_Count = missed_Ray_method(pro_data, zone_def, TMC_count[0][0], Count)
                     break_out = True
 
@@ -347,18 +339,11 @@ def remove_static_detections(processed_output):
                 else:
                     p1 = [id[i][1], id[i][2]]
                     distance = math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
-                    print(distance)
-                    #if p2 < ([id[i][1] + 1, id[i][2] + 1]) and p2 > ([id[i][1] - 1, id[i][2] - 1]):
                     if distance < 5:
                         removed_element = processed_output[j].pop(i)
-                        if len(id[0]) == 6:
-                            print("removed static RAW:" + str(removed_element))
-                        else:
-                            print("removed static:" + str(removed_element))
                         i -= 1
                         if len(processed_output[j]) == 0:  # if the list is empty
                             processed_output[j].pop()
-                        # print(removed_element)
                     else:
                         if i < len(id) - 1:
                             i += 1
@@ -380,9 +365,7 @@ def remove_outside_zone_box(data, w, h, zone_coords):
                     x = [point[1], w, point[1], 0]
                     y = [0, point[2], h, point[2]]
                     num_intersections = INTERSECT(point[1], point[2], x[k], y[k], zone_coords, True)
-                    # print(num_intersections)
                     if num_intersections[0] > 0:
-                        breakout = True
                         break
                 if num_intersections[0] == 2:
                     removed_element = data[j].pop(i)
@@ -403,13 +386,9 @@ def remove_bad_detections(processed_static):
                     p2 = id[i][3]
                     i += 1
                 else:
-                    # if p2 == [id[i][1], id[i][2]]:
                     if p2 != id[i][3]:
-                        # print(processed_output[j][i+1:])
                         i += 1
                         processed_static[j] = processed_static[j][:i]
-                        # removed_element = processed_output[j].pop(i + 1)
-                        # print(processed_output[j])
                     else:
                         i += 1
                         p2 = id[i][3]
