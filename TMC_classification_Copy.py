@@ -345,10 +345,16 @@ def remove_static_detections(processed_output):
                     p2 = [id[i][1], id[i][2]]
                     i += 1
                 else:
-                    # if p2 == [id[i][1], id[i][2]]:
-                    if p2 < ([id[i][1] + 2, id[i][2] + 2]) and p2 > ([id[i][1] - 2, id[i][2] - 2]):
+                    p1 = [id[i][1], id[i][2]]
+                    distance = math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
+                    print(distance)
+                    #if p2 < ([id[i][1] + 1, id[i][2] + 1]) and p2 > ([id[i][1] - 1, id[i][2] - 1]):
+                    if distance < 5:
                         removed_element = processed_output[j].pop(i)
-                        print(removed_element)
+                        if len(id[0]) == 6:
+                            print("removed static RAW:" + str(removed_element))
+                        else:
+                            print("removed static:" + str(removed_element))
                         i -= 1
                         if len(processed_output[j]) == 0:  # if the list is empty
                             processed_output[j].pop()
@@ -420,7 +426,7 @@ def preprocessing(data, data_zone_detections, zone_coords):
 
     #  1. IF THE VEHICLES ARE NOT MOVING OVER A DETECTION ZONE
     processed_static = remove_static_detections(processed_output)
-    processed_static_raw_data = remove_static_raw_detections(data)
+    processed_static_raw_data = remove_static_detections(data)
 
     # 2. REMOVE DATA FROM OUTSIDE THE ZONE BOX
     processed_zone_box = remove_outside_zone_box(data, w, h, zone_coords)
