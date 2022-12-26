@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="C:\Users\Josh\PycharmProjects\Flask_App_local\style.css">
-    <script src="C:\Users\Josh\PycharmProjects\Flask_App_local\fabric.js"></script>
-    <script src="C:\Users\Josh\PycharmProjects\Flask_App_local\jQuery.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="static/css/style.css">
+    <script src="static/js/fabric.js"></script>
+    <script src="static/js/jQuery.js" type="text/javascript"></script>
     <title>Fabric Tutorial </title>
   </head>
   <body id="body">
@@ -13,7 +13,7 @@
       <div>
         
         <video width=1280 height=720 id="video" autoplay muted>
-          <source src="C:\Users\Josh\PycharmProjects\Flask_App_local\video\EXAMPLE.mp4" type="video/mp4">
+          <source src="video\EXAMPLE.mp4" type="video/mp4">
         </video>
 
         <canvas id="canvas"></canvas>
@@ -271,16 +271,15 @@
       </div>
     </div>
 
-    <div id="toolbar">
-      <button onclick="download_csv_file()"> Download CSV </button>  
+    <div id="toolbar"> 
       <button id="load-project-btn" class="prj_btn">LOAD PROJECT</button>
       <button id="adding-line-btn" class="btn">ADD ZONE</button>
       <button id="edit-line-btn" class="edit_btn">EDIT ZONE</button>
       <button id="removeing-line-btn" class="remove_btn">REMOVE ZONE</button>
-      <button id="save-image-btn" class="save_btn">SAVE DETECTION ZONES</button>
-      <a id="help-btn" class="help_btn" href="">HELP</a>
+      <button onClick="SaveData(this.id)" id="save-image-btn" class="save_btn">SAVE DETECTION ZONES</button>
+      <a id="help-btn" class="help_btn" href="help.html">HELP</a>
     </div>
     
-    <script src="C:\Users\Josh\PycharmProjects\Flask_App_local\index.js"></script>
+    <script src="static/js/index.js"></script>
   </body>
 </html>

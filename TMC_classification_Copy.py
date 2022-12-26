@@ -363,37 +363,6 @@ def remove_static_detections(processed_output):
     return processed_output
 
 
-def remove_static_raw_detections(processed_output):
-    p2 = []
-    j = 0
-    for id in processed_output:  # For each unique id
-        i = 0
-        for point in range(len(id)):
-            while i < len(id):
-                if i == 0:
-                    p2 = [id[i][1], id[i][2]]
-                    i += 1
-                else:
-                    #p1 = [id[i+1][1], id[i+1][2]]
-                    #distance = math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
-                    #print(distance)
-                    if p2 < ([id[i][1] + 1, id[i][2] + 1]) and p2 > ([id[i][1] - 1, id[i][2] - 1]):
-                        removed_element = processed_output[j].pop(i)
-                        #print("removed static:" + str(removed_element))
-                        i -= 1
-                        if len(processed_output[j]) == 0:  # if the list is empty
-                            processed_output[j].pop()
-                        # print(removed_element)
-                    else:
-                        if i < len(id) - 1:
-                            i += 1
-                            p2 = [id[i][1], id[i][2]]
-                        else:
-                            break
-        j += 1
-    return processed_output
-
-
 def remove_outside_zone_box(data, w, h, zone_coords):
     j = 0
     for id in data:
