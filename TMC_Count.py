@@ -133,12 +133,6 @@ def drawLine(im0_, start_point, end_point, clr=(102, 255, 102), thick=3, zone_nu
     line_center = (int(line_center_x), int(line_center_y))
     count_line_center = [x - 25 for x in line_center]
 
-    #angle = math.degrees(math.atan((end_point[1] - start_point[1])/(end_point[0] - start_point[0])))
-    #axesLength = (50, 20)
-    #startAngle = 0
-    #endAngle = 360
-    #cv2.ellipse(im0_, line_center, axesLength, angle, startAngle, endAngle, clr, -1)
-
     cv2.circle(im0_, line_center, 20, clr, -1)
     cv2.circle(im0_, count_line_center, 20, clr, -1)
     cv2.circle(im0_, start_point, 7, clr, -1)
