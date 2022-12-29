@@ -36,9 +36,6 @@ def TMC_class(raw_data, pro_data, processed_zone_detections, num_values, zone_de
                         i += 4
                         j += 1
                 else:
-                    #missed_Count = missed(missed_Count, zone_def, raw_data, TMC_count, count_rng, zone_coords)
-                    #missed_Count = missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng, pro_data,
-                    #                                zone_coords)
                     missed_Count = missed_Ray_method(pro_data, zone_def, TMC_count[0][0], Count)
                     break_out = True
 
@@ -67,101 +64,17 @@ def TMC_class(raw_data, pro_data, processed_zone_detections, num_values, zone_de
     return Count, Missed, missed_Count
 
 
-def missed(Count, zone_def, raw_output, TMC_count, count_rng, zone_coords):
-    # TODO: this classifies the vehicles with only 1 intersect captured by checking the distance
-    #   of the first detection to the closest zone and then same thing with the last.
-    #   UPGRADE this with an algoithm that checks direction -> so 'plot' or somehow check the
-    #   direction and path of the movement and compare to the movements of the classified from above.
-    #   least squares regression? - scipy
-    #   ------------------------------------------------------------------------------------
-    #   UPDATE: Dont check all of the zones - just the entering zones for the start points
-    #   and the exiting zones for the end points. NOT GOING TO WORK IF ALL DEFINED ZONES ARE BOTH
-    #   ENTER/EXIT
-    movement = [0] * 4
-    id_2_find = TMC_count[0][0]  # id pf the single detection
-
-    raw_count = 0
-    breakout = False
-    # print(raw_output)
-    for ids in raw_output:
-        raw_count += 1
-        for id in ids:
-            if id_2_find in id and id.index(id_2_find) == 0:
-                breakout = True
-                break
-        if breakout:
-            break
-
-    if breakout:  # if id_2_find was not found - dont run following
-        # first and last detected coords
-        raw_list = raw_output[raw_count - 1]
-        # print(raw_list)
-        enter_coords = raw_list[0]
-        enter_coords = enter_coords[1:]
-        exit_coords = raw_list[-1]
-        exit_coords = exit_coords[1:]
-
-        ent_distance = []
-        ext_distance = []
-        for coords in zone_coords:
-            # zone midpoint coords
-            center_x = (coords[0][0] + coords[1][0]) / 2
-            center_y = (coords[0][1] + coords[1][1]) / 2
-            center_coords = [center_x, center_y]
-            # check distances
-            distance = math.sqrt((center_coords[0] - enter_coords[0]) ** 2 + (center_coords[1] - enter_coords[1]) ** 2)
-            ent_distance.append(distance)
-
-            distance = math.sqrt((center_coords[0] - exit_coords[0]) ** 2 + (center_coords[1] - exit_coords[1]) ** 2)
-            ext_distance.append(distance)
-
-        # find minimum distance to the zones - this should be the enter/exit zone
-        min_dist_ent = min(ent_distance)
-        min_dist_ext = min(ext_distance)
-        enter_zone = ent_distance.index(min_dist_ent) + 1
-        exit_zone = ext_distance.index(min_dist_ext) + 1
-
-        # classify the movement
-        k = 0
-        l = 0
-        sub_break_out = False
-        for rng in range(count_rng):  # loop through all 16 possible movement
-            if (enter_zone == zone_def[l]) or (enter_zone == zone_def[l + 1]):
-                for move in movement:  # loop through each 4 sub movements
-                    if (exit_zone == zone_def[l + 2]) or (exit_zone == zone_def[l + 3]):
-                        Count[k] += 1
-                        # if found break out of both for loops
-                        sub_break_out = True
-                        break
-                    else:
-                        # TODO : ***if for some reason the second detection was not defined this will
-                        #    throw an error since l keeps incrementing*** Turn the second else into a function
-                        #   called def misssed() - handle this error and the next with this function
-                        sub_break_out = True
-                    l += 4
-                    k += 1
-            if sub_break_out:
-                break
-            l += 4
-            k += 1
-    return Count
-
-
 def missed_Ray_method(raw_data, zone_def, id_2_find, Count):
     count_rng = len(Count) - 3
     ZoneList = []
-    #print(id_2_find)
     for TMC_count in raw_data:  # For each unique id
-        #print(TMC_count)
         if int(id_2_find) == TMC_count[0][0]:
-            #print(len(TMC_count))
             zoneFound = False
             z1 = None
             z1_x = None
             z2 = None
             count = 0
             while count < len(TMC_count):  # loop through each detection in unique id
-                #print(TMC_count[count][3])
                 if TMC_count[count][3] != 0 and not zoneFound:
                     z1 = TMC_count[count][3]  # save the first non-zero zone detection as z1
                     z1_x = TMC_count[count][3]
@@ -178,93 +91,10 @@ def missed_Ray_method(raw_data, zone_def, id_2_find, Count):
                     count += 1
             if z1 != None and z2 == None:  # Check if possible U turn
                 pass
-
             ZoneList.append([TMC_count[0][0], z1, z2])
             Count = classify(Count, count_rng, z1, z2, zone_def, TMC_count)
-            #print(ZoneList, len(ZoneList))
         else:
             pass
-    return Count
-
-
-def missed_CP_method(Count, zone_def, raw_data, TMC_count, count_rng, pro_data, zone_coords):
-    id_2_find = TMC_count[0][0]  # id pf the single detection
-
-    # FIND THE DATA ASSOCIATED WITH THE ID_2_FIND
-    raw_count_ID = 0
-    # midpoint = []
-    breakout = False
-    for ids in raw_data:
-        raw_count_ID += 1
-        for id in ids:
-            if id_2_find in id and id.index(id_2_find) == 0:
-                breakout = True
-                # FIND THE MIDPOINT
-                x1r = raw_data[raw_count_ID - 1][0][1]
-                x2r = raw_data[raw_count_ID - 1][-1][1]
-                y1r = raw_data[raw_count_ID - 1][0][2]
-                y2r = raw_data[raw_count_ID - 1][-1][2]
-                if len(pro_data[raw_count_ID - 1]) == 1:
-                    midpoint = [((x2r + x1r) / 2), ((y2r + y1r) / 2)]
-                    #midpoint = [pro_data[raw_count_ID - 1][0][1], pro_data[raw_count_ID - 1][0][2]]
-                    # slope = y2 - y1 / x2 - x1 (x2,y2) is the entering zone first
-                    slope_y_enter = y1r - midpoint[1]
-                    slope_x_enter = x1r - midpoint[0]
-                    slope_y_exit = y2r - midpoint[1]
-                    slope_x_exit = x2r - midpoint[0]
-                elif len(pro_data[raw_count_ID - 1]) > 1:
-                    midpoint = [((x2r + x1r) / 2), ((y2r + y1r) / 2)]
-                    print(midpoint)
-                    midpoint = NN(pro_data[raw_count_ID - 1], midpoint)
-                    slope_y_enter = y1r - midpoint[1]
-                    slope_x_enter = x1r - midpoint[0]
-                    slope_y_exit = y2r - midpoint[1]
-                    slope_x_exit = x2r - midpoint[0]
-                else:
-                    # IF THE MIDPOINT IS NOT WITHIN THE ZONE BOX - NEW IDEA???
-                    pass
-                    midpoint = [((raw_data[raw_count_ID - 1][-1][1] + raw_data[raw_count_ID - 1][0][1]) / 2),
-                                ((raw_data[raw_count_ID - 1][-1][2] + raw_data[raw_count_ID - 1][0][2]) / 2)]
-
-                EndPointX_enter = 20 * slope_x_enter + midpoint[0]
-                EndPointY_enter = 20 * slope_y_enter + midpoint[1]
-                EndPointX_exit = 20 * slope_x_exit + midpoint[0]
-                EndPointY_exit = 20 * slope_y_exit + midpoint[1]
-
-                EnterZone = 0
-                ExitZone = 0
-                zone_found, zone = INTERSECT(midpoint[0], midpoint[1], EndPointX_enter, EndPointY_enter, zone_coords)
-                if zone_found:
-                    EnterZone = zone
-                zone_found, zone = INTERSECT(midpoint[0], midpoint[1], EndPointX_exit, EndPointY_exit, zone_coords)
-                if zone_found:
-                    ExitZone = zone
-
-                if EnterZone == 0 and ExitZone == 0:
-                    # Only 1 data point in the raw_data
-                    break
-                # CASE - DATA MIDPOINT LINES OUTSIDE THE ZONE BOX
-                # TODO: data outside the zone box are most likly anomolies - not going to classify
-                if EnterZone == 0:
-                    break
-                    num_intersections, intersection_list = INTERSECT(midpoint[0], midpoint[1], EndPointX_exit,
-                                                                     EndPointY_exit, zone_coords, True)
-                    EnterZone = intersection_list[0][2]
-                    ExitZone = intersection_list[-1][2]
-                if ExitZone == 0:
-                    break
-                    num_intersections, intersection_list = INTERSECT(midpoint[0], midpoint[1], EndPointX_enter,
-                                                                     EndPointY_enter, zone_coords, True)
-                    EnterZone = intersection_list[-1][2]
-                    ExitZone = intersection_list[0][2]
-                if EnterZone != 0 and ExitZone != 0:
-                    Count = classify(Count, count_rng, EnterZone, ExitZone, zone_def, TMC_count)
-                    break
-                else:
-                    break
-        if breakout:
-            break
-
     return Count
 
 
@@ -363,28 +193,6 @@ def remove_static_detections(processed_output):
     return processed_output
 
 
-def remove_outside_zone_box(data, w, h, zone_coords):
-    j = 0
-    for id in data:
-        i = 0
-        for point in id:
-            while i < len(id) - 1:
-                num_intersections = 0
-                for k in range(4):
-                    x = [point[1], w, point[1], 0]
-                    y = [0, point[2], h, point[2]]
-                    num_intersections = INTERSECT(point[1], point[2], x[k], y[k], zone_coords, True)
-                    if num_intersections[0] > 0:
-                        breakout = True
-                        break
-                if num_intersections[0] == 2:
-                    removed_element = data[j].pop(i)
-                else:
-                    i += 1
-        j += 1
-    return data
-
-
 def remove_bad_detections(processed_static):
     j = 0
     new_processed_static = []
@@ -433,9 +241,6 @@ def preprocessing(data, data_zone_detections, zone_coords):
     #  1. IF THE VEHICLES ARE NOT MOVING OVER A DETECTION ZONE
     processed_static = remove_static_detections(processed_output)
     processed_static_raw_data = remove_static_detections(data)
-
-    # 2. REMOVE DATA FROM OUTSIDE THE ZONE BOX
-    processed_zone_box = remove_outside_zone_box(data, w, h, zone_coords)
 
     #  3. 3 - 1 - 3 : remove last 3
     processed_zone_detections = remove_bad_detections(processed_static)
