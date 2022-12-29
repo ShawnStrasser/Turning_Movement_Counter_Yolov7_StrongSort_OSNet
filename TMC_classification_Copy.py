@@ -1,9 +1,6 @@
 from itertools import islice
 import numpy as np
-import pandas as pd
-import pickle
 import math
-from Intersect import INTERSECT
 
 
 def TMC_class(raw_data, pro_data, processed_zone_detections, num_values, zone_def, zone_coords, interval=0,
@@ -269,51 +266,3 @@ def make_markdown_table(array, interval, start_time, Count_str):
         markdown += f"| {' | '.join(entry)} "
 
     return markdown
-
-
-if __name__ == '__main__':
-    # Load pickle file containing the zone definitions
-    zone_def = open("./TMC Testing/test22-nysdotv1.1_newAlgo/zone_pkl_dump.pkl", "rb")
-    zone_def = pickle.load(zone_def)
-
-
-    zone_coords = open("./TMC Testing/test22-nysdotv1.1_newAlgo/zone_coords_pkl_dump.pkl", "rb")
-    zone_coords = pickle.load(zone_coords)
-
-    # ZONE INTERSECTION DETECTIONS
-    data = open("./TMC Testing/test22-nysdotv1.1_newAlgo/data_zones_test.pkl", "rb")
-    data = pickle.load(data)
-    data.sort(key=lambda p: p[0])
-    df = pd.DataFrame(data)
-    df.to_csv(r'data.csv')
-
-    #   RAW DATA = ALL DETECTIONS WITH ZONE INTERSECTIONS
-    raw_data = open("./TMC Testing/test22-nysdotv1.1_newAlgo/data_test.pkl", "rb")
-    raw_data = pickle.load(raw_data)
-    raw_data.sort(key=lambda p: p[0])
-    #raw_data = raw_data[1:]  # first element is blank - remove it
-    df = pd.DataFrame(raw_data)
-    df.to_csv(r'raw_data.csv')
-
-    pro_raw_data = raw_data.copy()
-    processed_raw_data, processed_zone_detections, num_values = preprocessing(pro_raw_data, data, zone_coords)
-
-    # RELOAD THE RAW DATA AND THE ZONE DETECTIONS
-    raw_data = open("./TMC Testing/test22-nysdotv1.1_newAlgo/data_test.pkl", "rb")
-    raw_data = pickle.load(raw_data)
-    raw_data.sort(key=lambda p: p[0])
-    #raw_data = raw_data[1:]  # first element is blank - remove it
-    #processed_static_raw = remove_static_detections(raw_data)  # REMOVE THE STATIC VEHICLES FROM THE RAW DATA
-
-    data = open("./TMC Testing/test22-nysdotv1.1_newAlgo/data_zones_test.pkl", "rb")
-    data = pickle.load(data)
-    data.sort(key=lambda p: p[0])
-    data = organize_list(data)
-
-    # No pre processing
-    #r, missed, missed_Count = TMC_class(raw_data, raw_data, processed_zone_detections, num_values, zone_def,
-    #                                    zone_coords, interval=2)
-
-    r, missed, missed_Count = TMC_class(raw_data, processed_raw_data, processed_zone_detections, num_values, zone_def,
-                                       zone_coords, interval=2)
-    print(r, missed, missed_Count)
