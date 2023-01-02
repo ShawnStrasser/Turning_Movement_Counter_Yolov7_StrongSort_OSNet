@@ -116,11 +116,12 @@ class TmcCounter:
 
         # COUNT THE TURN MOVEMENTS
         pro_raw_data = self.data.copy()
-        processed_raw_data, processed_zone_detections, num_values = preprocessing(pro_raw_data, self.data_zones,
-                                                                                  self.Zones, frame_data)
+        processed_raw_data, processed_zone_detections, num_values, \
+        pot_ids_delete, pot_ids_delete_2 = preprocessing(pro_raw_data, self.data_zones, self.Zones, frame_data)
 
         r, missed, missed_Count = TMC_class(self.data, processed_raw_data, processed_zone_detections, num_values,
-                                            self.zone_def, self.Zones, interval)
+                                            self.zone_def, self.Zones, start_time, interval, pot_ids_delete,
+                                            pot_ids_delete_2)
 
         x = interval * 15
         with open("Zones_{}.pkl".format(x), "wb") as file:
@@ -135,29 +136,18 @@ def drawLine(im0_, start_point, end_point, clr=(102, 255, 102), thick=3, zone_nu
     line_center_x = abs(start_point[0] + end_point[0]) / 2
     line_center_y = abs(start_point[1] + end_point[1]) / 2
     line_center = (int(line_center_x), int(line_center_y))
-    count_line_center = [x - 25 for x in line_center]
-
-    #angle = math.degrees(math.atan((end_point[1] - start_point[1])/(end_point[0] - start_point[0])))
-    #axesLength = (50, 20)
-    #startAngle = 0
-    #endAngle = 360
-    #cv2.ellipse(im0_, line_center, axesLength, angle, startAngle, endAngle, clr, -1)
 
     cv2.circle(im0_, line_center, 20, clr, -1)
-    cv2.circle(im0_, count_line_center, 20, clr, -1)
     cv2.circle(im0_, start_point, 7, clr, -1)
     cv2.circle(im0_, end_point, 7, clr, -1)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
     fontScale = 1
-    text = 'Zone: ' + str(zone_num)
-    text_count = str(count)
+    text = str(zone_num)
     textsize, base = cv2.getTextSize(text, font, 1, 2)
     textsize = textsize[0]
     txt_center = (int(line_center_x - (textsize / 2)), int(line_center_y - (textsize / 2) + base * 2))
-    txt_count_center = [x - 25 for x in txt_center]
 
     cv2.putText(im0_, text, txt_center, font, fontScale, (255, 255, 255), 1, cv2.LINE_AA)
-    #cv2.putText(im0_, text_count, txt_count_center, font, fontScale, (255, 255, 255), 1, cv2.LINE_AA)
 
     return im0_
