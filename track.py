@@ -1,8 +1,3 @@
-'''
-#***************************************
-INDICATES CHANGES TO /Yolov7_StrongSORT_OSNet/track.py
-#***************************************
-'''
 import argparse
 
 import os
@@ -20,13 +15,10 @@ import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
 
+
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # yolov5 strongsort root directory
 WEIGHTS = ROOT / 'weights'
-#***************************************
-SAVE_ROOT = ROOT
-ROOT = ROOT / 'Yolov7_StrongSORT_OSNet'
-#***************************************
 
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
@@ -37,31 +29,32 @@ if str(ROOT / 'strong_sort') not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 
-from Yolov7_StrongSORT_OSNet.yolov7.models.experimental import attempt_load
-from Yolov7_StrongSORT_OSNet.yolov7.utils.datasets import LoadImages, LoadStreams
-from Yolov7_StrongSORT_OSNet.yolov7.utils.general import (check_img_size, non_max_suppression, scale_coords, check_requirements, cv2,
+from yolov7.models.experimental import attempt_load
+from yolov7.utils.datasets import LoadImages, LoadStreams
+from yolov7.utils.general import (check_img_size, non_max_suppression, scale_coords, check_requirements, cv2,
                                   check_imshow, xyxy2xywh, increment_path, strip_optimizer, colorstr, check_file)
-from Yolov7_StrongSORT_OSNet.yolov7.utils.torch_utils import select_device, time_synchronized
-from Yolov7_StrongSORT_OSNet.yolov7.utils.plots import plot_one_box
-from Yolov7_StrongSORT_OSNet.strong_sort.utils.parser import get_config
-from Yolov7_StrongSORT_OSNet.strong_sort.strong_sort import StrongSORT
+from yolov7.utils.torch_utils import select_device, time_synchronized
+from yolov7.utils.plots import plot_one_box
+from strong_sort.utils.parser import get_config
+from strong_sort.strong_sort import StrongSORT
 
 # ****************************************************************
 import pickle
 from TMC_Count import TmcCounter
 # Get Zone, colors from Flask app - main.py
-Zones = open("./Flask_App/zone_coords_pkl_dump.pkl", "rb")
+Zones = open("./Fabric_tutorial/zone_coords_pkl_dump.pkl", "rb")
 Zones = pickle.load(Zones)
 
-zone_colors = open("./Flask_App/colors_pkl_dump.pkl", "rb")
+zone_colors = open("./Fabric_tutorial/colors_pkl_dump.pkl", "rb")
 zone_colors = pickle.load(zone_colors)
 
 # Load pickle file containing the zone definitions
-zone_def = open("./Flask_App/zone_pkl_dump.pkl", "rb")
+zone_def = open("./Fabric_tutorial/zone_pkl_dump.pkl", "rb")
 zone_def = pickle.load(zone_def)
 
-mask = open("./Flask_App/mask.pkl", "rb")
+mask = open("./Fabric_tutorial/mask.pkl", "rb")
 mask = pickle.load(mask)
+
 for zone in Zones:
     for m in range(len(mask)):
         if mask[m][0] > mask[m][1]:
@@ -70,6 +63,9 @@ for zone in Zones:
         if mask[m][1] > mask[m][0]:
             zone[0][0] = zone[0][0] - mask[m][0]
             zone[1][0] = zone[1][0] - mask[m][0]
+
+frame_data = [[[]]]
+
 # ****************************************************************
 
 VID_FORMATS = 'asf', 'avi', 'gif', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'ts', 'wmv'  # include video suffixes
@@ -106,6 +102,7 @@ def run(
         hide_class=False,  # hide IDs
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
+        start_time=1600,
 ):
 
     source = str(source)
@@ -187,7 +184,7 @@ def run(
     fps_count = 0
     interval = 0
     # -------------
-    for frame_idx, (path, im, im0s, vid_cap, w, h) in enumerate(dataset):
+    for frame_idx, (path, im, im0s, vid_cap, w, h, frame_num) in enumerate(dataset):
         s = ''
         t1 = time_synchronized()
         im = torch.from_numpy(im).to(device)
@@ -208,9 +205,12 @@ def run(
         pred = non_max_suppression(pred[0], conf_thres, iou_thres, classes, agnostic_nms)
         dt[2] += time_synchronized() - t3
 
-        # --------------------
+        # ----------------------------------
         fps_count += 1
-        # --------------------
+        fps = vid_cap.get(cv2.CAP_PROP_FPS)
+        num_frames_15 = fps * 900
+        frame_list = []
+        # -----------------------------------
 
         # Process detections
         for i, det in enumerate(pred):  # detections per image
@@ -261,24 +261,28 @@ def run(
                 t5 = time_synchronized()
                 dt[3] += t5 - t4
 
+
                 # draw boxes for visualization
                 if len(outputs[i]) > 0:
                     for j, (output, conf) in enumerate(zip(outputs[i], confs)):
-    
+
                         bboxes = output[0:4]
                         id = output[4]
                         cls = output[5]
 
                         # **************************************************************************
-                        # TODO: Add the TMC class
-                        fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                        num_frames_15 = fps * 900
+                        # TODO: for each frame, save the detections to a list of index frame.
 
-                        im0 = tmc_class.count_TMC(bboxes, id, cls, im0, zone_colors)
+                        center_coordinates = (int(bboxes[0] + (bboxes[2] - bboxes[0]) / 2), int(bboxes[1] +
+                                              (bboxes[3] - bboxes[1]) / 2))
+                        frame_list.append(([id, center_coordinates[0], center_coordinates[1], frame_num]))
+
+                        im0 = tmc_class.count_TMC(bboxes, id, cls, im0, zone_colors, frame_num)
 
                         if fps_count > num_frames_15:
                             interval += 1
-                            r, missed, missed_Count = tmc_class.create_bin(interval)
+                            r, missed, missed_Count = tmc_class.create_bin(interval, start_time=0,
+                                                                           frame_data=frame_data)
                             print(r, missed, missed_Count)
                             # reset counters and lists
                             tmc_class.fps_count = 0
@@ -287,6 +291,7 @@ def run(
                             tmc_class.data = [[[]]]
                             tmc_class.data_zones.clear()
                             fps_count = 0
+                            frame_data.clear()
                         # **************************************************************************
 
                         if save_txt:
@@ -329,10 +334,8 @@ def run(
                         vid_writer[i].release()  # release previous video writer
                     if vid_cap:  # video
                         fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                        #************************************************
                         #w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
                         #h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-                        #************************************************
                     else:  # stream
                         fps, w, h = 30, im0.shape[1], im0.shape[0]
                     save_path = str(Path(save_path).with_suffix('.mp4'))  # force *.mp4 suffix on results videos
@@ -340,7 +343,11 @@ def run(
                 vid_writer[i].write(im0)
 
             prev_frames[i] = curr_frames[i]
-
+        # ------------------------------------
+        #print(frame_list)
+        if len(frame_list) > 0:
+            frame_data.append(frame_list)
+        # -----------------------------------
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
     print(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS, %.1fms strong sort update per image at shape {(1, 3, imgsz, imgsz)}' % t)
@@ -355,7 +362,7 @@ def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--yolo-weights', nargs='+', type=str, default=WEIGHTS / 'yolov7.pt', help='model.pt path(s)')
     parser.add_argument('--strong-sort-weights', type=str, default=WEIGHTS / 'osnet_x0_25_msmt17.pt')
-    parser.add_argument('--config-strongsort', type=str, default='Yolov7_StrongSORT_OSNet/strong_sort/configs/strong_sort.yaml')
+    parser.add_argument('--config-strongsort', type=str, default='strong_sort/configs/strong_sort.yaml')
     parser.add_argument('--source', type=str, default='0', help='file/dir/URL/glob, 0 for webcam')  
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.5, help='confidence threshold')
@@ -368,13 +375,13 @@ def parse_opt():
     parser.add_argument('--save-crop', action='store_true', help='save cropped prediction boxes')
     parser.add_argument('--save-vid', action='store_true', help='save video tracking results')
     parser.add_argument('--nosave', action='store_true', help='do not save images/videos')
-    # class 0 is person, 1 is bycicle, 2 is car, 3 is motorcycle, 5 is bus, 7 is truck... 79 is oven
+    # class 0 is person, 1 is bycicle, 2 is car... 79 is oven
     parser.add_argument('--classes', nargs='+', type=int, help='filter by class: --classes 0, or --classes 0 2 3')
     parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
     parser.add_argument('--augment', action='store_true', help='augmented inference')
     parser.add_argument('--visualize', action='store_true', help='visualize features')
     parser.add_argument('--update', action='store_true', help='update all models')
-    parser.add_argument('--project', default=SAVE_ROOT / 'runs/track', help='save results to project/name')
+    parser.add_argument('--project', default=ROOT / 'runs/track', help='save results to project/name')
     parser.add_argument('--name', default='exp', help='save results to project/name')
     parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
     parser.add_argument('--line-thickness', default=3, type=int, help='bounding box thickness (pixels)')
@@ -383,6 +390,7 @@ def parse_opt():
     parser.add_argument('--hide-class', default=False, action='store_true', help='hide IDs')
     parser.add_argument('--half', action='store_true', help='use FP16 half-precision inference')
     parser.add_argument('--dnn', action='store_true', help='use OpenCV DNN for ONNX inference')
+    parser.add_argument('--start-time', default=1600)
     opt = parser.parse_args()
     opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
 
