@@ -9,7 +9,6 @@ os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
 
 import sys
-import numpy as np
 from pathlib import Path
 import torch
 import torch.backends.cudnn as cudnn
@@ -65,7 +64,6 @@ for zone in Zones:
             zone[1][0] = zone[1][0] - mask[m][0]
 
 frame_data = [[[]]]
-
 # ****************************************************************
 
 VID_FORMATS = 'asf', 'avi', 'gif', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'ts', 'wmv'  # include video suffixes
@@ -271,8 +269,6 @@ def run(
                         cls = output[5]
 
                         # **************************************************************************
-                        # TODO: for each frame, save the detections to a list of index frame.
-
                         center_coordinates = (int(bboxes[0] + (bboxes[2] - bboxes[0]) / 2), int(bboxes[1] +
                                               (bboxes[3] - bboxes[1]) / 2))
                         frame_list.append(([id, center_coordinates[0], center_coordinates[1], frame_num]))
@@ -344,7 +340,6 @@ def run(
 
             prev_frames[i] = curr_frames[i]
         # ------------------------------------
-        #print(frame_list)
         if len(frame_list) > 0:
             frame_data.append(frame_list)
         # -----------------------------------
