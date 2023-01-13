@@ -34,7 +34,6 @@ class TmcClassification:
             i = 0
             break_out = False
 
-            # TODO: append carry over detections into processed_zone_detections[0]
             for z in self.CarryOverDetections:
                 if TMC_count[0][0] == z[0]:
                     TMC_count.insert(0, z)
@@ -78,14 +77,11 @@ class TmcClassification:
                                 else:
                                     pass
                                 if MatchFound:
-                                    #print(z1, z2)
                                     self.Count = classify(self.Count, count_rng, z1, z2, self.zone_def, TMC_count)
                                     break
                                 else:
-                                    #print("missed in List" + str(TMC_count))
                                     break
                             else:
-                                #print("missed and not in List" + str(TMC_count[0]))
                                 self.missed_Count = missed_Ray_method(self.processed_raw_data, self.zone_def,
                                                                       TMC_count[0][0], self.Count)
                                 break
@@ -104,7 +100,6 @@ class TmcClassification:
 
         with open("Output.txt", "r") as Output:
             markdown_list = Output.readlines()
-        #print(lines)
 
         #markdown_list = [["TIME", "NBR", "NBT", "NBL", "NBU", "SBR", "SBT", "SBL", "SBU", "EBR", "EBT", "EBL", "EBU", "WBR",
         #                  "WBT", "WBL", "WBU"], Count_str]
@@ -166,17 +161,14 @@ def remove_static_detections(processed_output):
                     else:
                         i += 1
                         p1 = [id[i][1], id[i][2]]
-                        # distance = math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
                         sq_distance = ((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
                         if sq_distance < 40:
                             removed_element = processed_output[j].pop(i)
-                            # print(removed_element, distance)
                             i -= 1
                             if len(processed_output[j]) == 0:  # if the list is empty
                                 processed_output[j].pop()
                         else:
                             if i < len(id) - 1:  # chek we arnt at the end of the list or get index error
-                                # i += 1
                                 p2 = [id[k][1], id[k][2]]
                                 k += 1
                             else:
@@ -233,7 +225,6 @@ def remove_bad_detections(processed_static):
                             new_processed_static.append(processed_static[j][i:])
                             processed_static[j] = processed_static[j][:i]
                             break
-                        # TODO : remove the 3rd detection - this makes the count worse for now but it is correct.
                         elif len(processed_static[j][i:]) == 1:
                             print("id to find" + str(processed_static[j]))
                             processed_static[j] = processed_static[j][:i]  # Delete the last value
@@ -245,41 +236,6 @@ def remove_bad_detections(processed_static):
     for i in range(len(new_processed_static)):
         processed_static.append(new_processed_static[i])
     return processed_static
-
-    def preprocessing(data, data_zone_detections, zone_coords, frame_data):
-        # TODO: 1. Remove the points that are duplicates. Vehicle detections that are not moving.
-        #          Process the zone detection and eliminate data that indicates zero movement. The issue
-        #          is that if a vehicle is sitting on a detection zone and the exit does not get picked up
-        #          the algorithm will think its a U-turn.
-        #   2. Remove the raw data points that are outside of the 'Zone Box'.  'Ray Casting method.'
-        #     Draw a line up/down/left/right until an intersection/s have been made.  If 1 intersection
-        #     then the point is inside the Box, if 2 intersections made then the point is outside the
-        #     box and can be deleted.
-        #   3. Check if the length zone detection list is greater than 2. If the last value is the same as the first
-        #     and the zone detections change say 3 - 1 - 3 : remove the last 3
-        #     if the the detections are say 3 - 1 - 1 - 3 : create a new 'id' to classify
-        #   4. Remove Anomolies - do this before step 3. Remove the data points that are 'outliers'
-
-        # TODO: need to get height and width of video automatically
-        w = 1280
-        h = 720
-
-        processed_output, num_values = organize_list(data_zone_detections)
-
-        #  1. IF THE VEHICLES ARE NOT MOVING OVER A DETECTION ZONE
-        processed_static = remove_static_detections(processed_output)
-        processed_static_raw_data = remove_static_detections(data)
-
-        pot_ids_delete, pot_ids_delete_2, ids_last_frame = id_change_frame(frame_data)
-        # print(pot_ids_delete)
-
-        # 2. REMOVE DATA FROM OUTSIDE THE ZONE BOX
-        # processed_zone_box = remove_outside_zone_box(data, w, h, zone_coords)
-
-        #  3. 3 - 1 - 3 : remove last 3
-        processed_zone_detections = remove_bad_detections(processed_static)
-
-        return processed_static_raw_data, processed_zone_detections, num_values, pot_ids_delete, pot_ids_delete_2, ids_last_frame
 
 
 def missed_Ray_method(raw_data, zone_def, id_2_find, Count):
@@ -310,8 +266,6 @@ def missed_Ray_method(raw_data, zone_def, id_2_find, Count):
             if foundOutside:
                 while count < len(TMC_count):  # loop through each detection in unique id
                     if TMC_count[count][3] != 0 and TMC_count[count][4] != 0 and not zoneFound:
-                        #z1 = TMC_count[count][3]  # save the first non-zero zone detection as z1
-                        #z1_x = TMC_count[count][3]
                         z1 = z1_ave
                         z1_x = z1_ave
                         count += 1
@@ -329,7 +283,6 @@ def missed_Ray_method(raw_data, zone_def, id_2_find, Count):
                 pass
 
             ZoneList.append([TMC_count[0][0], z1, z2])
-            print(ZoneList)
             Count = classify(Count, count_rng, z1, z2, zone_def, TMC_count)
         else:
             pass

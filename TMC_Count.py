@@ -3,7 +3,6 @@ import pickle
 from TMC_classification import TmcClassification, Preprocessing
 import cv2
 import math
-import numpy as np
 
 
 class TmcCounter:
