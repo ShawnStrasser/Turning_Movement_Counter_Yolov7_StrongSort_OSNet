@@ -20,7 +20,7 @@ class TmcClassification:
         self.Count = [0] * 16
         self.Missed = []
         self.missed_Count = [0] * 16
-        self.CarryOverDetections = [[818, 507, 43, 2, 12718], [850]]
+        self.CarryOverDetections = []
         self.buildZoneList = []
         self.start_time = 1600
 
