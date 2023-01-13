@@ -61,7 +61,7 @@ class TmcClassification:
                         MatchFound = False
 
                         if TMC_count[-1][0] in self.ids_last_frame:
-                            self.CarryOverDetections.append(TMC_count)
+                            self.CarryOverDetections.append(TMC_count[0])
                             break
                         else:
                             if TMC_count[0][0] in self.ids_delete_2:  # if the id is in the potential ids to delete list
