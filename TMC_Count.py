@@ -1,6 +1,6 @@
 from Intersect import INTERSECT
 import pickle
-from TMC_classification_Copy import TMC_class, preprocessing
+from TMC_classification import TmcClassification, Preprocessing
 import cv2
 import math
 import numpy as np
@@ -31,7 +31,6 @@ class TmcCounter:
             i += 1
             for sub_list2 in sub_list:
                 if id in sub_list2 and not self.breakout and sub_list2.index(id) == 0:
-                    # TODO: Add Filter?
                     self.index = i  # subtract 2 since the first list of 'data' is empty
                     self.data_store_f[self.index - 2] = ([id, center_coordinates[0], center_coordinates[1]])
 
@@ -61,7 +60,6 @@ class TmcCounter:
                                                           first_intersection, second_intersection, cls, frame_num])
 
                     # ****************************************************************************************
-                    # TODO  - Added frame number to list
                     sub_list.append([id, center_coordinates[0], center_coordinates[1], first_intersection,
                                      second_intersection, cls, frame_num])
                     self.breakout = True
@@ -116,22 +114,25 @@ class TmcCounter:
 
         # COUNT THE TURN MOVEMENTS
         pro_raw_data = self.data.copy()
-        processed_raw_data, processed_zone_detections, num_values, \
-        pot_ids_delete, pot_ids_delete_2 = preprocessing(pro_raw_data, self.data_zones, self.Zones, frame_data)
 
-        r, missed, missed_Count = TMC_class(self.data, processed_raw_data, processed_zone_detections, num_values,
-                                            self.zone_def, self.Zones, start_time, interval, pot_ids_delete,
-                                            pot_ids_delete_2)
+        ProcessedData = Preprocessing(pro_raw_data, self.data_zones, frame_data)
+
+        TMC_Counter = TmcClassification(ProcessedData.processed_static_raw_data,
+                                        ProcessedData.processed_zone_detections,
+                                        ProcessedData.num_values, self.zone_def, interval=1,
+                                        ids_delete=ProcessedData.pot_ids_delete,
+                                        ids_delete_2=ProcessedData.pot_ids_delete_2,
+                                        ids_last_frame=ProcessedData.ids_last_frame)
+        TMC_Counter.TMC_count()
 
         x = interval * 15
         with open("Zones_{}.pkl".format(x), "wb") as file:
             pickle.dump(self.data_zones, file)
 
-        return r, missed, missed_Count
+        return TMC_Counter.Count, TMC_Counter.Missed, TMC_Counter.missed_Count
 
 
 def drawLine(im0_, start_point, end_point, clr=(102, 255, 102), thick=3, zone_num=1, count=0):
-    # TODO - add count to the zone
     cv2.line(im0_, start_point, end_point, color=clr, thickness=thick)
     line_center_x = abs(start_point[0] + end_point[0]) / 2
     line_center_y = abs(start_point[1] + end_point[1]) / 2
