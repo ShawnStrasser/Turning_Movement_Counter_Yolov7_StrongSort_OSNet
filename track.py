@@ -42,17 +42,17 @@ from Yolov7_StrongSORT_OSNet.strong_sort.strong_sort import StrongSORT
 import pickle
 from TMC_Count import TmcCounter
 # Get Zone, colors from Flask app - main.py
-Zones = open("./Fabric_tutorial/zone_coords_pkl_dump.pkl", "rb")
+Zones = open("./Flask_App/zone_coords_pkl_dump.pkl", "rb")
 Zones = pickle.load(Zones)
 
-zone_colors = open("./Fabric_tutorial/colors_pkl_dump.pkl", "rb")
+zone_colors = open("./Flask_App/colors_pkl_dump.pkl", "rb")
 zone_colors = pickle.load(zone_colors)
 
 # Load pickle file containing the zone definitions
-zone_def = open("./Fabric_tutorial/zone_pkl_dump.pkl", "rb")
+zone_def = open("./Flask_App/zone_pkl_dump.pkl", "rb")
 zone_def = pickle.load(zone_def)
 
-mask = open("./Fabric_tutorial/mask.pkl", "rb")
+mask = open("./Flask_App/mask.pkl", "rb")
 mask = pickle.load(mask)
 
 for zone in Zones:
