@@ -74,7 +74,8 @@ $ python track.py --source <path to video> --yolo-weights yolov7-e6e.pt --img 64
 ```
 
 ### Custom Dataset
-Contact me for custom yolov7 weights.
+Custom dataset created for vehicle detection only. This dataset is more accurate for turning movement counts. The custom classes available are [car, truck, school bus, person, trailer, bicycle].  Contact me for the custom yolov7 weight file or if you would like to contribute to the dataset. 
+
 
 ## Contact 
 For questions please email joshuakuminski.github@gmail.com
