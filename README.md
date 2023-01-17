@@ -73,6 +73,9 @@ $ python track.py --source <path to video> --yolo-weights yolov7-e6e.pt --img 64
                                                                                                                                                      --show-vid --device 0 #if cuda is available
 ```
 
+### Custom Dataset
+Contact me for custom yolov7 weights.
+
 ## Contact 
 For questions please email joshuakuminski.github@gmail.com
 For bugs and feature requests please visit [GitHub Issues](https://github.com/joshkuminski/Turning_Movement_Counter_with_Yolov7_StrongSORT_OSNet/issues).
