@@ -28,14 +28,15 @@ if str(ROOT / 'strong_sort') not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 
-from yolov7.models.experimental import attempt_load
-from yolov7.utils.datasets import LoadImages, LoadStreams
-from yolov7.utils.general import (check_img_size, non_max_suppression, scale_coords, check_requirements, cv2,
-                                  check_imshow, xyxy2xywh, increment_path, strip_optimizer, colorstr, check_file)
-from yolov7.utils.torch_utils import select_device, time_synchronized
-from yolov7.utils.plots import plot_one_box
-from strong_sort.utils.parser import get_config
-from strong_sort.strong_sort import StrongSORT
+from Yolov7_StrongSORT_OSNet.yolov7.models.experimental import attempt_load
+from Yolov7_StrongSORT_OSNet.yolov7.utils.datasets import LoadImages, LoadStreams
+from Yolov7_StrongSORT_OSNet.yolov7.utils.general import (check_img_size, non_max_suppression, scale_coords,
+                                                          check_requirements, cv2, check_imshow, xyxy2xywh,
+                                                          increment_path, strip_optimizer, colorstr, check_file)
+from Yolov7_StrongSORT_OSNet.yolov7.utils.torch_utils import select_device, time_synchronized
+from Yolov7_StrongSORT_OSNet.yolov7.utils.plots import plot_one_box
+from Yolov7_StrongSORT_OSNet.strong_sort.utils.parser import get_config
+from Yolov7_StrongSORT_OSNet.strong_sort.strong_sort import StrongSORT
 
 # ****************************************************************
 import pickle
