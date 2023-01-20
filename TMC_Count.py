@@ -128,7 +128,17 @@ class TmcCounter:
         with open("Zones_{}.pkl".format(x), "wb") as file:
             pickle.dump(self.data_zones, file)
 
-        return TMC_Counter.Count, TMC_Counter.Missed, TMC_Counter.missed_Count
+        self.data.clear()
+        self.data = [[[]]]
+        self.data_store_in.clear()
+        self.data_store_f.clear()
+        self.data_zones.clear()
+        self.index = 0
+        self.data_zones_ray_intersect.clear()
+        frame_data.clear()
+        frame_data = [[[]]]
+
+        return TMC_Counter.Count, TMC_Counter.Missed, TMC_Counter.missed_Count, frame_data
 
 
 def drawLine(im0_, start_point, end_point, clr=(102, 255, 102), thick=3, zone_num=1, count=0):

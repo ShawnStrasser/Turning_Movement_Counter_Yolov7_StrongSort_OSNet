@@ -75,7 +75,7 @@ def run(
         source='0',
         yolo_weights=WEIGHTS / 'yolov5m.pt',  # model.pt path(s),
         strong_sort_weights=WEIGHTS / 'osnet_x0_25_msmt17.pt',  # model.pt path,
-        config_strongsort=ROOT / 'strong_sort/configs/strong_sort.yaml',
+        config_strongsort=ROOT / 'Yolov7_StrongSORT_OSNet/strong_sort/configs/strong_sort.yaml',
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
         iou_thres=0.45,  # NMS IOU threshold
@@ -183,7 +183,7 @@ def run(
     fps_count = 0
     interval = 0
     # -------------
-    for frame_idx, (path, im, im0s, vid_cap, w, h, frame_num) in enumerate(dataset):
+    for frame_idx, (path, im, im0s, vid_cap, w, h, frame_num, nframes) in enumerate(dataset):
         s = ''
         t1 = time_synchronized()
         im = torch.from_numpy(im).to(device)
@@ -208,6 +208,8 @@ def run(
         fps_count += 1
         fps = vid_cap.get(cv2.CAP_PROP_FPS)
         num_frames_15 = fps * 900
+        add_frame = (nframes - num_frames_15 * 4) / 4
+        num_frames_15 = num_frames_15 + add_frame
         frame_list = []
         # -----------------------------------
 
@@ -282,11 +284,6 @@ def run(
                                                                            frame_data=frame_data)
                             print(r, missed, missed_Count)
                             # reset counters and lists
-                            tmc_class.fps_count = 0
-                            tmc_class.int_bool = False
-                            tmc_class.data.clear()
-                            tmc_class.data = [[[]]]
-                            tmc_class.data_zones.clear()
                             fps_count = 0
                             frame_data.clear()
                         # **************************************************************************
@@ -358,7 +355,7 @@ def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--yolo-weights', nargs='+', type=str, default=WEIGHTS / 'yolov7.pt', help='model.pt path(s)')
     parser.add_argument('--strong-sort-weights', type=str, default=WEIGHTS / 'osnet_x0_25_msmt17.pt')
-    parser.add_argument('--config-strongsort', type=str, default='strong_sort/configs/strong_sort.yaml')
+    parser.add_argument('--config-strongsort', type=str, default='Yolov7_StrongSORT_OSNet/strong_sort/configs/strong_sort.yaml')
     parser.add_argument('--source', type=str, default='0', help='file/dir/URL/glob, 0 for webcam')  
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.5, help='confidence threshold')
