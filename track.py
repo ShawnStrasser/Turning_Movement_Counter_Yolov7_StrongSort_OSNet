@@ -208,8 +208,17 @@ def run(
         fps_count += 1
         fps = vid_cap.get(cv2.CAP_PROP_FPS)
         num_frames_15 = fps * 900
-        add_frame = (nframes - num_frames_15 * 4) / 4
+
+        vid_length = nframes/fps
+        interval_15 = int(vid_length/900)
+        add_frames = int(nframes - num_frames_15 * interval_15)
+        add_frame = int(add_frames / interval_15)
         num_frames_15 = num_frames_15 + add_frame
+        # Add any remaining frames to the last bin
+        if (interval + 1) == interval_15:
+            rem = nframes - add_frames
+            num_frames_15 = num_frames_15 + rem
+
         frame_list = []
         # -----------------------------------
 
