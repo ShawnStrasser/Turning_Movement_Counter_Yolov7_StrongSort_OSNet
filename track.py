@@ -19,14 +19,15 @@ FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # yolov5 strongsort root directory
 WEIGHTS = ROOT / 'weights'
 
+sys.path.append(str(ROOT / 'weights'))
+
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
-if str(ROOT / 'yolov7') not in sys.path:
-    sys.path.append(str(ROOT / 'yolov7'))  # add yolov5 ROOT to PATH
-if str(ROOT / 'strong_sort') not in sys.path:
-    sys.path.append(str(ROOT / 'strong_sort'))  # add strong_sort ROOT to PATH
+if str(ROOT / 'Yolov7_StrongSORT_OSNet/yolov7') not in sys.path:
+    sys.path.append(str(ROOT / 'Yolov7_StrongSORT_OSNet/yolov7'))  # add yolov5 ROOT to PATH
+if str(ROOT / 'Yolov7_StrongSORT_OSNet/strong_sort') not in sys.path:
+    sys.path.append(str(ROOT / 'Yolov7_StrongSORT_OSNet/strong_sort'))  # add strong_sort ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
-
 
 from Yolov7_StrongSORT_OSNet.yolov7.models.experimental import attempt_load
 from Yolov7_StrongSORT_OSNet.yolov7.utils.datasets import LoadImages, LoadStreams
@@ -73,8 +74,8 @@ VID_FORMATS = 'asf', 'avi', 'gif', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 't
 @torch.no_grad()
 def run(
         source='0',
-        yolo_weights=WEIGHTS / 'yolov5m.pt',  # model.pt path(s),
-        strong_sort_weights=WEIGHTS / 'osnet_x0_25_msmt17.pt',  # model.pt path,
+        yolo_weights=WEIGHTS / 'yolov7.pt',  # model.pt path(s),
+        strong_sort_weights=WEIGHTS / 'osnet_x0_75_msmt17.pt',  # model.pt path,
         config_strongsort=ROOT / 'Yolov7_StrongSORT_OSNet/strong_sort/configs/strong_sort.yaml',
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
@@ -212,8 +213,8 @@ def run(
         vid_length = nframes/fps
         interval_15 = int(vid_length/900)
         add_frames = int(nframes - num_frames_15 * interval_15)
-        add_frame = int(add_frames / interval_15)
-        num_frames_15 = num_frames_15 + add_frame
+        #add_frame = int(add_frames / interval_15)
+        #num_frames_15 = num_frames_15 + add_frame
         # Add any remaining frames to the last bin
         if (interval + 1) == interval_15:
             rem = nframes - add_frames
@@ -363,7 +364,7 @@ def run(
 def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--yolo-weights', nargs='+', type=str, default=WEIGHTS / 'yolov7.pt', help='model.pt path(s)')
-    parser.add_argument('--strong-sort-weights', type=str, default=WEIGHTS / 'osnet_x0_25_msmt17.pt')
+    parser.add_argument('--strong-sort-weights', type=str, default=WEIGHTS / 'osnet_x0_75_msmt17.pt')
     parser.add_argument('--config-strongsort', type=str, default='Yolov7_StrongSORT_OSNet/strong_sort/configs/strong_sort.yaml')
     parser.add_argument('--source', type=str, default='0', help='file/dir/URL/glob, 0 for webcam')  
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
@@ -400,7 +401,7 @@ def parse_opt():
 
 
 def main(opt):
-    check_requirements(requirements=ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
+    #check_requirements(requirements=ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     run(**vars(opt))
 
 
