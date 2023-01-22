@@ -227,8 +227,8 @@ function  SaveZones(){
      var csv = '';  
         
      //merge the data with CSV  
-     data.forEach(function(row2) {  
-             csv += row2.join(',');  
+     data.forEach(function(row) {  
+             csv += row.join(',');  
              csv += "\n";  
             });  
  

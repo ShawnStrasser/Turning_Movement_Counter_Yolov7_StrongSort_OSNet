@@ -29,18 +29,6 @@
 	margin: 0px;
 }
 
-#load-project-btn{
-    position: absolute;
-    top: 14px;
-    left: 20px;
-    margin: 0px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 2px solid gray;
-    color: gray;
-    font-weight: 600;
-}
-
 #adding-line-btn{
 	position: absolute;
     top: 14px;
@@ -58,7 +46,7 @@
 }
 
 .btn:hover {
-    color: white;
+    color: white !important;
     background-color: #4CAF50;
     font-weight: 600;
 }
@@ -84,7 +72,7 @@
 }
 
 .mask_btn:hover {
-    color: white;
+    color: white !important;
     background-color: #6495ED;
     font-weight: 600;
 }
@@ -118,7 +106,7 @@
 }
 
 .save_btn:hover {
-    color: white;
+    color: white !important;
     background-color: gray;
     font-weight: 600;
 }

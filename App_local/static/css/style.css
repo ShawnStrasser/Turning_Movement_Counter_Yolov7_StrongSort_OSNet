@@ -58,7 +58,7 @@
 }
 
 .btn:hover {
-    color: white;
+    color: white !important;
     background-color: #4CAF50;
     font-weight: 600;
 }
@@ -84,7 +84,7 @@
 }
 
 .edit_btn:hover {
-    color: white;
+    color: white !important;
     background-color: #6495ED;
     font-weight: 600;
 }
@@ -118,7 +118,7 @@
 }
 
 .save_btn:hover {
-    color: white;
+    color: white !important;
     background-color: gray;
     font-weight: 600;
 }
