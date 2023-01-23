@@ -18,11 +18,11 @@
 ## Introduction
 *This is a work in progress*
 
-This repository is a Vehicle Turning Movement Counting that utilizes the [Yolov7_StrongSORT_OSNet](https://github.com/mikel-brostrom/Yolov7_StrongSORT_OSNet) project.
-In traffic engineering a Turning Movment Count is a count taken at a intersection that describes the number of vehicles for each movement.
+This repository is a Vehicle Turning Movement Counting project that utilizes [Yolov7_StrongSORT_OSNet](https://github.com/mikel-brostrom/Yolov7_StrongSORT_OSNet).
+In traffic engineering a Turning Movment Count is a count taken at a intersection that describes the number of vehicles for each movement. This consists of a simple web application to define the movements. The Yolov7_StrongSORT_OSNet project has been modified to count the vehicles in 15min. bins.
 
 ## Prerequisites
-In order to run the colab example you need to first have an [ngrok](https://ngrok.com/). No need for ngrok if you want to run on your local machine.
+In order to run the colab example you need to first have an [ngrok](https://ngrok.com/) auth token. No need for ngrok if you want to run on your local machine.
 
 ## Before you run the tracker
 
@@ -46,7 +46,7 @@ git clone https://github.com/joshkuminski/yolov7.git
 
 ```
 
-4. clone the xxxx project:
+4. clone the ReID project:
 ```bash
 cd strong_sort\deep\reid
 git clone https://github.com/joshkuminski/deep-person-reid.git
