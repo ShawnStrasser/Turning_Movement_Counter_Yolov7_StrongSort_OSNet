@@ -6,9 +6,12 @@
 
 <div align="center">
 <p>
-<img src="Flask_App/demo.gif" width="300"/>  <img src="demo.gif" width="300"/> 
+<img src="Flask_App/demo.gif" width="400"/>  <img src="demo.gif" width="400"/> 
 </p>
-<br>  
+  <p><i>----------------------- Web Application ---------------------</i><i>---------------------- Output Video --------------------</i>
+  </p>
+<br>
+  
 <a href="https://colab.research.google.com/drive/13vHgJh_sT52fsWvrhmbNx_RK21hI0tBS#scrollTo=rEAldD9xRFG1=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
 </div>
 
@@ -18,11 +21,11 @@
 ## Introduction
 *This is a work in progress*
 
-This repository is a Vehicle Turning Movement Counting that utilizes the [Yolov7_StrongSORT_OSNet](https://github.com/mikel-brostrom/Yolov7_StrongSORT_OSNet) project.
-In traffic engineering a Turning Movment Count is a count taken at a intersection that describes the number of vehicles for each movement.
+This repository is a Vehicle Turning Movement Counting project that utilizes [Yolov7_StrongSORT_OSNet](https://github.com/mikel-brostrom/Yolov7_StrongSORT_OSNet).
+This consists of a simple web application to define the movements and object tracking done with Yolov7_StrongSORT_OSNet project. A but modified to count the vehicles in 15min. bins. In traffic engineering a Turning Movment Count is a count taken at a intersection that describes the number of vehicles for each movement. 
 
 ## Prerequisites
-In order to run the colab example you need to first have an [ngrok](https://ngrok.com/). No need for ngrok if you want to run on your local machine.
+In order to run the colab example you need to first have an [ngrok](https://ngrok.com/) auth token. No need for ngrok if you want to run on your local machine.
 
 ## Before you run the tracker
 
@@ -46,7 +49,7 @@ git clone https://github.com/joshkuminski/yolov7.git
 
 ```
 
-4. clone the xxxx project:
+4. clone the ReID project:
 ```bash
 cd strong_sort\deep\reid
 git clone https://github.com/joshkuminski/deep-person-reid.git
