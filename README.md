@@ -59,6 +59,7 @@ git clone https://github.com/joshkuminski/deep-person-reid.git
 ```bash
 cd Turning_Movement_Counter_with_Yolov7_StrongSORT_OSNet/local_requirements
 pip install -r requirements.txt
+pip install -r requirements_gpu.txt
 ```
 
 ### Run the Flask App
