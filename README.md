@@ -8,7 +8,10 @@
 <p>
 <img src="Flask_App/demo.gif" width="300"/>  <img src="demo.gif" width="300"/> 
 </p>
-<br>  
+  <p align="left"><i>Web Application</i>
+  </p>
+<br>
+  
 <a href="https://colab.research.google.com/drive/13vHgJh_sT52fsWvrhmbNx_RK21hI0tBS#scrollTo=rEAldD9xRFG1=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
 </div>
 
