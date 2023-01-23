@@ -6,9 +6,9 @@
 
 <div align="center">
 <p>
-<img src="Flask_App/demo.gif" width="300"/>  <img src="demo.gif" width="300"/> 
+<img src="Flask_App/demo.gif" width="400"/>  <img src="demo.gif" width="400"/> 
 </p>
-  <p align="left"><i>Web Application</i>
+  <p><i>----------------------- Web Application ---------------------</i><i>---------------------- Output Video --------------------</i>
   </p>
 <br>
   
