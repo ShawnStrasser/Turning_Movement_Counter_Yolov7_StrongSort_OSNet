@@ -21,8 +21,7 @@
 ## Introduction
 *This is a work in progress*
 
-This repository is a Vehicle Turning Movement Counting project that utilizes [Yolov7_StrongSORT_OSNet](https://github.com/mikel-brostrom/Yolov7_StrongSORT_OSNet).
-This consists of a simple web application to define the movements, a simple algorithm is used for counting the vehicles in 15min bins and object tracking is accomplished with Yolov7_StrongSORT_OSNet project. In traffic engineering a Turning Movment Count is a count taken at a intersection that describes the number of vehicles for each movement. This data is used to model the intersection for signal timing purposes.
+This repository is a project that aims to count the number of vehicles making turning movements at an intersection. It leverages the powerful capabilities of the [Yolov7_StrongSORT_OSNet](https://github.com/mikel-brostrom/Yolov7_StrongSORT_OSNet) framework to achieve this goal. The project includes a user-friendly web application that allows users to define the different movements at the intersection. A simple algorithm is employed to count the vehicles in 15-minute increments, and object tracking is achieved through the use of Yolov7_StrongSORT_OSNet. A Turning Movement Count, is commonly used in traffic engineering to model intersections and optimize signal timing.
 
 ## Prerequisites
 In order to run the colab example you need to first have an [ngrok](https://ngrok.com/) auth token. No need for ngrok if you want to run on your local machine.
