@@ -55,7 +55,7 @@ cd strong_sort\deep\reid
 git clone https://github.com/joshkuminski/deep-person-reid.git
 ```
 
-5. Make sure that you fulfill all the requirements: Python 3.8 or later with all [requirements.txt](https://github.com/mikel-brostrom/Yolov7_DeepSort_Pytorch/blob/master/requirements.txt) dependencies installed, including torch>=1.7. To install, run:
+5. Make sure that you fulfill all the requirements: Python 3.8 or later with all [requirements.txt](local_requirements/requirements.txt) dependencies installed, including torch>=1.7. If using a gpu for tracking, you need to comment out the torch install lines in requirements.txt and also install requirements_gpu.txt. Cuda toolkit is required to utilize gpu. To install requirements.txt, run:
 ```bash
 pip install -r requirements.txt
 ```
