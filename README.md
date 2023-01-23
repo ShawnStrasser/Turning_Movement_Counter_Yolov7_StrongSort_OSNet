@@ -55,7 +55,7 @@ cd strong_sort\deep\reid
 git clone https://github.com/joshkuminski/deep-person-reid.git
 ```
 
-5. Make sure that you fulfill all the requirements: Python 3.8 or later with all [requirements.txt](local_requirements/requirements.txt) dependencies installed, including torch>=1.7. If using a gpu for tracking, you need to comment out the torch install lines in requirements.txt and also install requirements_gpu.txt. Cuda toolkit is required to utilize gpu. To install requirements.txt, run:
+5. Make sure that you fulfill all the requirements: Python 3.8 or later with all [requirements.txt](local_requirements/requirements.txt) dependencies installed, including torch>=1.7. If using a gpu for tracking, you need to uncomment the torch install lines in requirements.txt if gpu is not available. Cuda toolkit is required to utilize gpu. To install, run:
 ```bash
 cd Turning_Movement_Counter_with_Yolov7_StrongSORT_OSNet/local_requirements
 pip install -r requirements.txt
