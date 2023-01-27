@@ -1,14 +1,30 @@
-let width = $("#video")[0].width;
-let height = $("#video")[0].height;
+//let width = $("#video")[0].width;
+//let height = $("#video")[0].height;
 //Set the canvas properties - need fabric.js
 let canvas = new fabric.Canvas('canvas',{
-    width: width,
-    height: height,
     background: null,
 });
 
 //add a disable class when button is click so it cant be clicked a second time
 $('.edit_btn').addClass('disabled');
+
+//LOAD A NEW VIDEO - FILE MUST BE IN FOLDER 'video' IN THIS DIRECTORY
+function openFile() {
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = _this => {
+              let files =   Array.from(input.files);
+              console.log(files);
+              let fileName = files[0]["name"];
+              $("#video")[0].setAttribute('src', 'video/' + fileName);
+              console.log($("#video")[0].videoWidth); 
+              //$("#video")[0].setAttribute('width',);
+              //$("#video")[0].setAttribute('height',);
+              $("#canvas")[0].width = 720;
+              $("#canvas")[0].height = 480;
+          };
+    input.click();
+  }
 
 //set the button id to a variable 'addingLineBtn'
 let addingLineBtn = document.getElementById("adding-line-btn");

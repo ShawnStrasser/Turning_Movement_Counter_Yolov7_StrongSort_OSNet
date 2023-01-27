@@ -29,22 +29,32 @@
 	margin: 0px;
 }
 
-#load-project-btn{
+#project-btn{
     position: absolute;
     top: 14px;
     left: 20px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
-    border: 2px solid gray;
-    color: gray;
+    border: 2px solid rgb(97, 23, 120);
+    color: rgb(97, 23, 120);
+    font-weight: 600;
+}
+
+.project_btn {
+    transition-duration: 0.4s;
+}
+
+.project_btn:hover {
+    color: white !important;
+    background-color: rgb(97, 23, 120);
     font-weight: 600;
 }
 
 #adding-line-btn{
 	position: absolute;
     top: 14px;
-    left: 30px;
+    left: 205px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
@@ -71,7 +81,7 @@
 #edit-line-btn{
     position: absolute;
     top: 14px;
-    left: 155px;
+    left: 320px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
@@ -93,7 +103,7 @@
 #mask-btn{
 	position: absolute;
     top: 14px;
-    left: 290px;
+    left: 440px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
@@ -115,7 +125,7 @@
 #save-image-btn{
 	position: absolute;
     top: 14px;
-    left: 430px;
+    left: 560px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
@@ -137,7 +147,7 @@
 #help-btn{
     position: absolute;
     top: 14px;
-    left: 665px;
+    left: 770px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
