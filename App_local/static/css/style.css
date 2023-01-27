@@ -44,7 +44,7 @@
 #adding-line-btn{
 	position: absolute;
     top: 14px;
-    left: 175px;
+    left: 30px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
@@ -65,12 +65,13 @@
 
 .disabled{
     pointer-events: none;
+    background-color: rgb(208, 218, 223);
 }
 
 #edit-line-btn{
     position: absolute;
     top: 14px;
-    left: 295px;
+    left: 155px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
@@ -89,10 +90,10 @@
     font-weight: 600;
 }
 
-#removeing-line-btn{
+#mask-btn{
 	position: absolute;
     top: 14px;
-    left: 418px;
+    left: 290px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
@@ -101,10 +102,20 @@
     font-weight: 600;
 }
 
+.mask_btn {
+    transition-duration: 0.8s;
+}
+
+.mask_btn:hover {
+    color: white !important;
+    background-color: #DC143C;
+    font-weight: 600;
+}
+
 #save-image-btn{
 	position: absolute;
     top: 14px;
-    left: 570px;
+    left: 430px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
@@ -126,12 +137,23 @@
 #help-btn{
     position: absolute;
     top: 14px;
-    left: 790px;
+    left: 665px;
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
-    border: 2px solid gray;
-    color: gray;
+    border: 2px solid rgb(200, 203, 1);
+    color: rgb(200, 203, 1);
+    font-weight: 600;
+    background-color: white ;
+}
+
+.help_btn {
+    transition-duration: 0.4s;
+}
+
+.help_btn:hover {
+    color: white !important;
+    background-color: rgb(200, 203, 1) !important;
     font-weight: 600;
 }
 

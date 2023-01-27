@@ -7,6 +7,8 @@ let canvas = new fabric.Canvas('canvas',{
     background: null,
 });
 
+//add a disable class when button is click so it cant be clicked a second time
+$('.edit_btn').addClass('disabled');
 
 //set the button id to a variable 'addingLineBtn'
 let addingLineBtn = document.getElementById("adding-line-btn");
