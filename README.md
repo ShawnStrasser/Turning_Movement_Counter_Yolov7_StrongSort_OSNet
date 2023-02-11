@@ -83,5 +83,5 @@ Custom dataset created for vehicle detection only. This dataset is more accurate
 
 ## Contact 
 For questions please email joshuakuminski.github@gmail.com
-For bugs and feature requests please visit [GitHub Issues](https://github.com/joshkuminski/Turning_Movement_Counter_with_Yolov7_StrongSORT_OSNet/issues).
+For bugs and feature requests please visit [GitHub Issues](https://github.com/joshkuminski/Turning_Movement_Counter_Yolov7_StrongSort_OSNet/issues).
 
