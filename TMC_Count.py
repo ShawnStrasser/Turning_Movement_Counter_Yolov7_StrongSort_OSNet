@@ -2,7 +2,7 @@ from Intersect import INTERSECT
 import pickle
 from TMC_classification import TmcClassification, Preprocessing
 import cv2
-import math
+import numpy as np
 
 
 class TmcCounter:
@@ -45,9 +45,12 @@ class TmcCounter:
                     if num_intersections != 0 and len(intersection_list) != 0:
                         distance_list = []
                         for intersect in intersection_list:
-                            distance = math.sqrt((intersect[0] - self.data_store_in[self.index - 2][1]) ** 2 +
-                                                 (intersect[1] - self.data_store_in[self.index - 2][2]) ** 2)
-                            distance_list.append(distance)
+                            x = [intersect[0], intersect[1]]
+                            y = [self.data_store_in[self.index - 2][1], self.data_store_in[self.index - 2][2]]
+                            eluc_dist = np.linalg.norm(np.array(x) - np.array(y))
+                            #distance = math.sqrt((intersect[0] - self.data_store_in[self.index - 2][1]) ** 2 +
+                            #                     (intersect[1] - self.data_store_in[self.index - 2][2]) ** 2)
+                            distance_list.append(eluc_dist)
                         if num_intersections == 1:
                             first_intersection = intersection_list[0][2]
                             second_intersection = 0
