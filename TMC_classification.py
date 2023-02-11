@@ -151,6 +151,7 @@ class TmcClassification:
                     break
                 i += 4
                 j += 1
+        plt.show()
 
         self.Missed = self.num_values - sum(self.Count)
         i = 0
