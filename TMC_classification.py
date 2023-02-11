@@ -4,6 +4,7 @@ import pandas as pd
 import pickle
 import math
 from collections import Counter
+import matplotlib.pyplot as plt
 
 
 class TmcClassification:
@@ -28,25 +29,53 @@ class TmcClassification:
         movement = [0] * 4
         count_rng = len(self.Count) - 3
         buildList = []
+        ID = 0
+        plt_colors = ['c', 'g', 'm', 'y']  # NB, SB, EB, WB
 
         for TMC_count in self.processed_zone_detections:  # loop through each group of detections
             j = 0
             i = 0
             break_out = False
+            ID += 1
 
             for z in self.CarryOverDetections:
                 if TMC_count[0][0] == z[0]:
                     TMC_count.insert(0, z)
-                    print(TMC_count, z)
 
             for zone in range(count_rng):  # loop through all 16 possible movement
                 if (TMC_count[0][3] == self.zone_def[i]) or (TMC_count[0][3] == self.zone_def[i + 1]):
                     if (TMC_count[0][1] != TMC_count[-1][1]) and (TMC_count[0][2] != TMC_count[-1][2]):  # Check if there is only 1 zone detection
+                        if i == 52 or i == 56:
+                            movement = [0]*3
                         for move in movement:  # loop through each 4 sub movements
                             if TMC_count[-1][3] == self.zone_def[i + 2] or TMC_count[-1][3] == self.zone_def[i + 3]:
                                 self.Count[j] += 1
-                                if j == 3:
-                                    print("id to find = " + str(TMC_count))
+                                break_loop = False
+                                Index = 0
+                                for ii in self.processed_raw_data:
+                                    for k in ii:
+                                        if k[0] == TMC_count[0][0]:
+                                            break_loop = True
+                                            break
+                                    Index += 1
+                                    if break_loop:
+                                        break
+                                x = []
+                                y = []
+                                for ii in self.processed_raw_data[Index - 1]:
+                                    x.append(ii[1])
+                                    y.append(ii[2])
+                                if j <= 3:
+                                    clr_id = 0
+                                elif (j <= 7) and (j > 3):
+                                    clr_id = 1
+                                elif (j <= 11) and (j > 7):
+                                    clr_id = 2
+                                else:
+                                    clr_id = 3
+
+                                plt.scatter(x, y, color=plt_colors[clr_id], alpha=0.2)
+
                                 # if found break out of both for loops
                                 break_out = True
                                 break
@@ -77,11 +106,43 @@ class TmcClassification:
                                 else:
                                     pass
                                 if MatchFound:
+                                    break_loop = False
+                                    Index = 0
+                                    for ii in self.processed_raw_data:
+                                        for k in ii:
+                                            if k[0] == TMC_count[0][0]:
+                                                break_loop = True
+                                                break
+                                        Index += 1
+                                        if break_loop:
+                                            break
+                                    x = []
+                                    y = []
+                                    for ii in self.processed_raw_data[Index - 1]:
+                                        x.append(ii[1])
+                                        y.append(ii[2])
+                                    plt.scatter(x, y, color='k')
                                     self.Count = classify(self.Count, count_rng, z1, z2, self.zone_def, TMC_count)
                                     break
                                 else:
                                     break
                             else:
+                                break_loop = False
+                                Index = 0
+                                for ii in self.processed_raw_data:
+                                    for k in ii:
+                                        if k[0] == TMC_count[0][0]:
+                                            break_loop = True
+                                            break
+                                    Index += 1
+                                    if break_loop:
+                                        break
+                                x = []
+                                y = []
+                                for ii in self.processed_raw_data[Index - 1]:
+                                    x.append(ii[1])
+                                    y.append(ii[2])
+                                plt.scatter(x, y, color='k')
                                 self.missed_Count = missed_Ray_method(self.processed_raw_data, self.zone_def,
                                                                       TMC_count[0][0], self.Count)
                                 break
