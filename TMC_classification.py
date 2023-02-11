@@ -105,7 +105,8 @@ class TmcClassification:
                     break
                 i += 4
                 j += 1
-        plt.show()
+        #plt.show()
+        plt.savefig('Output_graph.jpg')
 
         self.Missed = self.num_values - sum(self.Count)
         i = 0
