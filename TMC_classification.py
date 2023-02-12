@@ -391,15 +391,14 @@ def make_markdown_table(array, interval, start_time, Count_str):
 
 if __name__ == '__main__':
     # Load pickle file containing the zone definitions
-    zone_def = open("./!ZoneMethod Testing/test20/zone_pkl_dump.pkl", "rb")
-    zone_def = pickle.load(zone_def)
+    with open("./!ZoneMethod Testing/test20/zone_pkl_dump.pkl", "rb") as file:
+        zone_def = pickle.load(file)
 
+    with open("./!ZoneMethod Testing/test20/zone_coords_pkl_dump.pkl", "rb") as file:
+        zone_coords = pickle.load(file)
 
-    zone_coords = open("./!ZoneMethod Testing/test20/zone_coords_pkl_dump.pkl", "rb")
-    zone_coords = pickle.load(zone_coords)
-
-    frame_data = open("./!ZoneMethod Testing/test20/frame_data.pkl", "rb")
-    frame_data = pickle.load(frame_data)
+    with open("./!ZoneMethod Testing/test20/frame_data.pkl", "rb") as file:
+        frame_data = pickle.load(file)
 
     # ZONE INTERSECTION DETECTIONS
     data = open("./!ZoneMethod Testing/test20/data_zones_test.pkl", "rb")
