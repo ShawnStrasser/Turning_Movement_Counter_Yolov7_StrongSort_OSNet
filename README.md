@@ -30,7 +30,7 @@ In order to run the colab example you need to first have an [ngrok](https://ngro
 
 1. Clone the repository:
 
-`git clone https://github.com/joshkuminski/Yolov7_StrongSORT_OSNet.git`
+`git clone https://github.com/joshkuminski/Turning_Movement_Counter_Yolov7_StrongSort_OSNet.git`
 
 2. cd into repo and clone the multiple object tracking (MOT) project:
 ```bash
