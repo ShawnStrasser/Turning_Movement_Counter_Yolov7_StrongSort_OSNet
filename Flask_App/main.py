@@ -19,7 +19,7 @@ height = vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
 width = vid.get(cv2.CAP_PROP_FRAME_WIDTH)
 
 file_path = file_path.split('static')
-file_path = file_path[1][1:]
+file_path = file_path[1]
 
 
 @app.route('/')
